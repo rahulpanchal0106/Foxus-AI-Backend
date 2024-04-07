@@ -1,67 +1,136 @@
-require('dotenv').config();
-async function postMessage(req,res){
-    const prompt = req.body.prompt;
-    var messages=[];
+// IF YOU ARE CREATING ANY ANOTHER FUNCTION FOR PROMPT YOU HAVE TO PROVIDE  const examples = [] along with context....
 
-    console.log('processing...');
-    
-    const { DiscussServiceClient } = require("@google-ai/generativelanguage");
-    const { GoogleAuth } = require("google-auth-library");
+require("dotenv").config();
 
-    const MODEL_NAME = "models/chat-bison-001";
-    const API_KEY = process.env.API_KEY;
+const { DiscussServiceClient } = require("@google-ai/generativelanguage");
+const { GoogleAuth } = require("google-auth-library");
 
-    const client = new DiscussServiceClient({
-        authClient: new GoogleAuth().fromAPIKey(API_KEY),
-    });
+const MODEL_NAME = "models/chat-bison-001";
+const API_KEY = process.env.API_KEY;
 
-    let PaLM_res;
-    const context = "Explain each topic in crisp details";
-    const examples = [];
-    
-    console.log(`Prompt arrived..... ${prompt}`)
-    // log(`Prompt arrived..... ${prompt}`);
-    messages.push({"content":prompt});
-    
+const client = new DiscussServiceClient({
+  authClient: new GoogleAuth().fromAPIKey(API_KEY),
+});
 
-    try {
-        const result = await client.generateMessage({
-            model: MODEL_NAME,
-            temperature: 0.6,
-            candidateCount: 1,
-            top_k: 50,
-            top_p: 0.9,
-            prompt: {
-                context: context,
-                examples: examples,
-                messages: messages,
-            },
-        });
-        const resp = result[0].candidates[0].content;
-        // if(sizeInBytes>=20000){
-        //     messages.pop();
-        // }
-        messages.push({"content":resp});
+async function postMessage(req, res) {
+  const prompt = req.body.prompt;
+  const messages = [];
 
-        function getArraySizeInBytes(arr) {
-            var jsonString = JSON.stringify(arr);
-            var bytes = Buffer.from(jsonString).length;
-            return bytes;
-        }
-        var sizeInBytes = getArraySizeInBytes(messages);
-        
-        // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-        console.log(`✨ ${resp}`);
-        console.log(`Size of request payload: ${sizeInBytes} bytes`);
-        res.status(200).json({ result: `${resp}` });
-    } catch (error) {
+  console.log("processing...");
 
-        console.error('Error:', error);
-        res.status(200).json({ result:""});
+  try {
+    //if question is simple then don't divide propmpt into different topics
+    if (isDirectQuestion(prompt)) {
+      // Attempt to get a direct answer
+      const directAnswer = await getDirectAnswer(prompt, client);
+
+      if (directAnswer) {
+        res.status(200).json({ result: directAnswer });
+      } else {
+        res.status(200).json({ error: "Unable to find a direct answer" });
+      }
+    } else {
+      // Generate topics and explain the selected one
+      const context = `Give name of 5 topics name related to ${prompt} in one to two words`;
+      const examples = [];
+      console.log(`Prompt arrived..... ${prompt}`);
+      messages.push({ content: prompt });
+
+      const result = await client.generateMessage({
+        model: MODEL_NAME,
+        temperature: 0.6,
+        candidateCount: 1,
+        top_k: 50,
+        top_p: 0.9,
+        prompt: { context, examples, messages },
+      });
+
+      const resp = result[0].candidates[0].content;
+      console.log(resp);
+      const topics = resp.split("\n*").map((topic) => topic.trim());
+      console.log(topics);
+
+      // Replace this with actual logic to get user's choice (what user click on front-end)
+      const selectedTopicIndex = 2;
+      const selectedTopic = topics[selectedTopicIndex];
+
+      try {
+        const detailedExplanation = await explainTopic(selectedTopic, client);
+        res.status(200).json({ topics, detailedExplanation });
+        console.log(detailedExplanation);
+      } catch (error) {
+        console.error("Error explaining topic:", error);
+        res.status(500).json({ error: "Failed to explain topic" });
+      }
     }
-    // console.log(messages);
-    messages.push({"content":"NEXT REQUEST"})
-    
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+//if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
+function isDirectQuestion(question) {
+  const directKeywords = [
+    "what is",
+    "who is",
+    "how many",
+    "when did",
+    "definition",
+    "capital",
+    "formula",
+  ];
+  return directKeywords.some((keyword) =>
+    question.toLowerCase().startsWith(keyword)
+  );
+}
+
+
+// For getting answer directly
+async function getDirectAnswer(question, client) {
+  const context = `Answer the following question directly and concisely: ${question}`;
+  const examples = [];
+  const messages = [{ content: question }];
+
+  try {
+    const result = await client.generateMessage({
+      model: MODEL_NAME,
+      temperature: 0.3, // Lower temperature for factual responses
+      candidateCount: 1,
+      top_k: 50,
+      top_p: 0.9,
+      prompt: { context, examples, messages },
+    });
+    const answer = result[0].candidates[0].content.trim();
+    console.log(answer);
+    return answer;
+  } catch (error) {
+    console.error("Error in getDirectAnswer:", error);
+    return null; // Return null if no direct answer is found
+  }
+}
+
+
+// explain selected topic in detail
+async function explainTopic(topic, client) {
+  const context = `Explain the following topic in detail, providing comprehensive information and insights: ${topic}`;
+  const examples = [];
+  const messages = [{ content: topic }];
+
+  try {
+    const result = await client.generateMessage({
+      model: MODEL_NAME,
+      temperature: 0.6,
+      candidateCount: 1,
+      top_k: 50,
+      top_p: 0.9,
+      prompt: { context, examples, messages },
+    });
+    return result[0].candidates[0].content;
+  } catch (error) {
+    console.error("Error in explainTopic:", error);
+    throw error; // Re-throw to allow handling in postMessage
+  }
 }
 
 module.exports = postMessage;
