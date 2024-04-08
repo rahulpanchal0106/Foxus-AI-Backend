@@ -1,5 +1,10 @@
 require('dotenv').config();
 
+//REQUIREMENTS: req.body must have prompt:{
+    // "levelName": "<LEVEL NAME>",
+    // "levelContent": "<LEVEL INFO>",
+    // "subject":"<SUBJECT NAME>" }
+
 async function postLayer1(req,res){
     const input = req.body.prompt; //should contain levelName, levelContent and Subject
     const prompt = `List out all possible chapters for the topic content: ${input.levelContent}, and topic level: ${input.levelName} `

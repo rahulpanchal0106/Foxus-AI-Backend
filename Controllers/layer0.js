@@ -1,4 +1,5 @@
 require('dotenv').config();
+//REQUIREMENTS: req.body must have prompt:"<SUBJECT NAME>"
 const {generateText} = require('../utils/Result')
 var levels = [];
 //if prompt contain following keyword then it is considered as simple and we can directly answer is as it is

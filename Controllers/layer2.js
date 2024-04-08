@@ -1,4 +1,11 @@
 require('dotenv').config();
+
+//REQUIREMENTS: req.body must have prompt:{
+//     "chapter":"<CHAPTER NAME>",
+//     "levelName":"<LEVEL NAME>",
+//     "subject":"<SUBJECT NAME>"
+// }
+
 var levels = [];
 async function sendLayer2(req,res){
     const input = req.body.prompt;
