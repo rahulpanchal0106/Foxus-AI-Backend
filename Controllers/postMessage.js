@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const { DiscussServiceClient } = require("@google-ai/generativelanguage");
 const { GoogleAuth } = require("google-auth-library");
+const { generateText } = require("../utils/Result");
 
 const MODEL_NAME = "models/chat-bison-001";
 const API_KEY = process.env.API_KEY;
@@ -31,23 +32,20 @@ async function postMessage(req, res) {
       }
     } else {
       // Generate topics and explain the selected one
-      const context = `Give name of 5 topics name related to ${prompt} in one to two words`;
+      const context = `Give name of 5 topics related to ${prompt} in one word only`;
       const examples = [];
       console.log(`Prompt arrived..... ${prompt}`);
       messages.push({ content: prompt });
 
-      const result = await client.generateMessage({
-        model: MODEL_NAME,
-        temperature: 0.6,
-        candidateCount: 1,
-        top_k: 50,
-        top_p: 0.9,
-        prompt: { context, examples, messages },
-      });
+      const topicsText = await generateText(
+        context,
+        examples,
+        messages
+      );
 
-      const resp = result[0].candidates[0].content;
-      console.log(resp);
-      const topics = resp.split("\n*").map((topic) => topic.trim());
+      // const resp = result[0].candidates[0].content;
+      // console.log(resp);
+      const topics = topicsText.split("\n*").map((topic) => topic.trim());
       console.log(topics);
 
       // Replace this with actual logic to get user's choice (what user click on front-end)
@@ -56,8 +54,12 @@ async function postMessage(req, res) {
 
       try {
         const detailedExplanation = await explainTopic(selectedTopic, client);
-        res.status(200).json({ topics, detailedExplanation });
+        const quizQuestions = await generateQuiz(selectedTopic, client);
+        res
+          .status(200)
+          .json({ topics, detailedExplanation, quiz: quizQuestions });
         console.log(detailedExplanation);
+        console.log(quizQuestions);
       } catch (error) {
         console.error("Error explaining topic:", error);
         res.status(500).json({ error: "Failed to explain topic" });
@@ -85,31 +87,17 @@ function isDirectQuestion(question) {
   );
 }
 
-
 // For getting answer directly
 async function getDirectAnswer(question, client) {
   const context = `Answer the following question directly and concisely: ${question}`;
   const examples = [];
   const messages = [{ content: question }];
 
-  try {
-    const result = await client.generateMessage({
-      model: MODEL_NAME,
-      temperature: 0.3, // Lower temperature for factual responses
-      candidateCount: 1,
-      top_k: 50,
-      top_p: 0.9,
-      prompt: { context, examples, messages },
-    });
-    const answer = result[0].candidates[0].content.trim();
-    console.log(answer);
-    return answer;
-  } catch (error) {
-    console.error("Error in getDirectAnswer:", error);
-    return null; // Return null if no direct answer is found
-  }
-}
+  const topicsText = await generateText( context, examples, messages);
 
+  console.log(topicsText);
+  return topicsText;
+}
 
 // explain selected topic in detail
 async function explainTopic(topic, client) {
@@ -117,20 +105,47 @@ async function explainTopic(topic, client) {
   const examples = [];
   const messages = [{ content: topic }];
 
-  try {
-    const result = await client.generateMessage({
-      model: MODEL_NAME,
-      temperature: 0.6,
-      candidateCount: 1,
-      top_k: 50,
-      top_p: 0.9,
-      prompt: { context, examples, messages },
-    });
-    return result[0].candidates[0].content;
-  } catch (error) {
-    console.error("Error in explainTopic:", error);
-    throw error; // Re-throw to allow handling in postMessage
+  const topicsText = await generateText( context, examples, messages);
+  return topicsText;
+}
+
+//Generate quiz
+async function generateQuiz(topic, client) {
+  const context = `Generate 5 multiple choice questions with 4 options each based on the topic: ${topic}.
+  Ensure one option is correct and others are plausible distractors. Provide the correct answer for each question.`;
+  const examples = [];
+  const messages = [{ content: topic }];
+
+  const quizData = await generateText( context, examples, messages);
+
+  // Parse and structure quiz data (e.g., into an array of question objects)
+  console.log(quizData);
+  const questions = parseQuizData(quizData);
+  console.log(questions);
+  return questions;
+}
+
+// // structure the quizData into appropriate formate
+function parseQuizData(quizData) {
+  const questions = [];
+  const lines = quizData.trim().split("\n");
+  let currentQuestion = null;
+
+  for (const line of lines) {
+    if (line.startsWith("Q:")) {
+      currentQuestion = { question: line.substring(2).trim(), options: [], answer: null };
+      questions.push(currentQuestion);
+    } else if (line.match(/^[A-D]:/)) {
+      const optionLetter = line.substring(0, 2).trim();
+      const optionText = line.substring(2).trim();
+      currentQuestion.options.push({ letter: optionLetter, text: optionText });
+      if (line.includes("(Correct)")) {
+        currentQuestion.answer = optionLetter;
+      }
+    }
   }
+
+  return questions;
 }
 
 module.exports = postMessage;
