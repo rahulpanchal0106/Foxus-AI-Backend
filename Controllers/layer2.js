@@ -32,7 +32,6 @@ async function sendLayer2(req, res) {
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
-
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
   const resp = await generateText(context, examples, messages);
