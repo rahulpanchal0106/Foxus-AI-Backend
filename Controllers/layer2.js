@@ -63,7 +63,7 @@ async function sendLayer2(req, res) {
   console.log("🔥🔥", levels);
 
   const levelsJson = levels.map((lessonStr) => {
-    const match = lessonStr.match(/^(.*?)(:\s|:\s\*|\.\*|\s-\s|\d+\.\s|\* \*\s|:\*)(.*)$/);
+    const match = lessonStr.match(/^(.*?)(:\s|:\s\*|\.\*|\s-\s|\d+\.\s)(.*)$/);
 
 
     if (match) {
