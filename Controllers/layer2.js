@@ -8,12 +8,12 @@ require("dotenv").config();
 //     "subject":"<SUBJECT NAME>"
 // }
 
-var levels = [];
+var lessons = [];
 async function sendLayer2(req, res) {
   const input = req.body.prompt;
   const prompt = `List out all possible lessons from chapter: ${input.chapter}. for the subject: ${input.subject}, that is of level: ${input.levelName}.  Try to write a very brief note about the lessons after the name of lessons.`;
   var messages = [];
-  levels = [];
+  lessons = [];
 
   console.log("processing...");
 
@@ -54,35 +54,29 @@ async function sendLayer2(req, res) {
   const lines = resp.split("\n");
 
   lines.forEach((line) => {
-    if (line.startsWith("* **") || line.startsWith("*")) {
-      const level = line.replace("* **", "").replace("*", "").trim();
-      levels.push(level);
+    if(/^\d/.test(line)){
+      const lesson = line.trim();
+      lessons.push(lesson);
+    }
+    else if (line.startsWith("* **") || line.startsWith("*")) {
+      const lesson = line.replace("* **", "").replace("*", "").trim();
+      lessons.push(lesson);
     }
   });
 
-  console.log("🔥🔥", levels);
+  console.log("🔥🔥", lessons);
 
-  const levelsJson = levels.map((lessonStr) => {
-    const match = lessonStr.match(/^(.*?)(:\s|:\s\*|\.\*|\s-\s|\d+\.\s)(.*)$/);
-
-
-    if (match) {
-      const [, name, , content] = match;
-      return {
-        lessonName: name.trim(),
-        lessonContent: content.trim(),
-      };
-    } else {
-      return {
-        lessonName: lessonStr.trim(),
-        lessonContent: "",
-      };
+  const lessonsJson = lessons.map((lessonStr) => {
+    const parts = lessonStr.split(/:\*{1,2}/);
+    return {
+      lessonName:parts[0],
+      lessonContent:parts[1]
     }
   });
-  console.log(levelsJson);
+  console.log(lessonsJson);
 
   console.log(`Size of request payload: ${sizeInBytes} bytes`);
-  res.status(200).json(levelsJson);
+  res.status(200).json(lessonsJson);
 
   // console.log(messages);
   messages.push({ content: "NEXT REQUEST" });
@@ -90,19 +84,19 @@ async function sendLayer2(req, res) {
 
 module.exports = sendLayer2;
 
-// const levelsJson = levels.map(levelStr => {
+// const lessonsJson = lessons.map(lessonstr => {
 //     // Check if the string contains ":*"
-//     const delimiterIndex = levelStr.indexOf(':*');
+//     const delimiterIndex = lessonstr.indexOf(':*');
 //     if (delimiterIndex !== -1) {
 //       // If ":*" is found, split the string into name and content
-//       const [name, content] = levelStr.split(':*');
+//       const [name, content] = lessonstr.split(':*');
 //       return {
 //         lessonName: name.trim(),
 //         lessonContent: content.trim()
 //       };
 //     } else {
 //       // If ":*" is not found, split the string by ":"
-//       const [name, content] = levelStr.split(":");
+//       const [name, content] = lessonstr.split(":");
 //       return {
 //         lessonName: name.trim(),
 //         lessonContent: content ? content.trim() : '' // Handle case where there's no content after ":"

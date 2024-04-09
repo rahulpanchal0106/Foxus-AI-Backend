@@ -55,10 +55,15 @@ async function postLayer1(req, res) {
   const topics = [];
 
   lines.forEach((line) => {
+    if(/^\d/.test(line)){
+      const lesson = line.trim();
+      lessons.push(lesson);
+    }
     if (
       line.startsWith("* **") ||
       line.startsWith("*") ||
-      line.startsWith(" *")
+      line.startsWith(" *")||
+      line.match(/^\d/)
     ) {
       const topicName = line.replace("* **", "").replace("*", "").trim();
       topics.push(topicName);
