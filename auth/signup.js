@@ -3,13 +3,13 @@ const prisma = new PrismaClient();
 async function postUser(req,res){
     try {
         // Extract user data from request body
-        const { email, name } = req.body;
+        const { username, password } = req.body;
     
         // Create a new user in the database using Prisma Client
-        const newUser = await prisma.user.create({
+        const newUser = await prisma.users.create({
           data: {
-            email,
-            name,
+            username,
+            password,
           },
         });
     
