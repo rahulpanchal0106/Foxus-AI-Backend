@@ -21,7 +21,7 @@ async function generateText(context = "", examples = [], messages = []) {
     return result[0].candidates[0].content;
   } catch (error) {
     console.error("Error in generateText:", error);
-    throw error; // Re-throw for handling in the calling function
+    return null; // Re-throw for handling in the calling function
   }
 }
 
