@@ -26,11 +26,11 @@ app.use(morgan('combined'))
 app.post('/login', login);
 app.post('/signup',postUser);
 app.get('/',getHome);
-app.post('/layer3',sendLayer3); //need to add a session auth here
-app.post('/layer2',sendLayer2); //need to add a session auth here
-app.post('/layer1',sendLayer1);
-app.post('/layer0',auth,sendLayer0);
-app.post("/send", postMessage); //need to add a session auth here
+app.post('/layer3',auth,sendLayer3);
+app.post('/layer2',auth,sendLayer2);
+app.post('/layer1',auth,sendLayer1)
+app.post('/layer0',auth,sendLayer0)
+app.post("/send", postMessage);
 app.post('/quiz',getQuiz);
 // console.log(explainTopic);
 module.exports = app;
