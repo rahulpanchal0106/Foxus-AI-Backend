@@ -1,6 +1,7 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const cors  = require("cors");
+const morgan = require("morgan");
 require("dotenv").config();
 
 const prisma = new PrismaClient();
@@ -19,6 +20,7 @@ const postMessage = require("./Controllers/postMessage.js");
 app.use(express.json());
 app.use(cors());
 
+app.use(morgan('combined'))
 app.get('/users', getAllUsers);
 app.post('/users',postUser);
 app.get('/',getHome);
