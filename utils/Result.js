@@ -10,6 +10,7 @@ const client = new DiscussServiceClient({
 
 async function generateText(context = "", examples = [], messages = []) {
   try {
+    console.log(messages);
     const result = await client.generateMessage({
       model: MODEL_NAME,
       temperature: 0.6, // Adjust as needed
@@ -18,7 +19,12 @@ async function generateText(context = "", examples = [], messages = []) {
       top_p: 0.9,
       prompt: { context, examples, messages },
     });
-    return result[0].candidates[0].content;
+    if (result[0] && result[0].candidates[0]) {
+      return result[0].candidates[0].content;
+  } else {
+      
+      return "No content generated"; // Or throw an error, log a message, etc.
+  }
   } catch (error) {
     console.error("Error in generateText:", error);
     throw error; // Re-throw for handling in the calling function

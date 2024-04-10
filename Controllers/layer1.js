@@ -57,7 +57,7 @@ async function postLayer1(req, res) {
   lines.forEach((line) => {
     if(/^\d/.test(line)){
       const lesson = line.trim();
-      lessons.push(lesson);
+      // lessons.push(lesson);
     }
     if (
       line.startsWith("* **") ||

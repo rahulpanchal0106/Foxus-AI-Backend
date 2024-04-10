@@ -75,7 +75,7 @@ async function sendLayer0(req, res) {
     const directAnswer = await getDirectAnswer(prompt, client);
 
     if (directAnswer) {
-      res.status(200).json({ result: directAnswer });
+      res.status(200).json({ result: directAnswer }); 
     } else {
       res.status(200).json({ error: "Unable to find a direct answer" });
     }
