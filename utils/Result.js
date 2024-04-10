@@ -19,10 +19,12 @@ async function generateText(context = "", examples = [], messages = []) {
       top_p: 0.9,
       prompt: { context, examples, messages },
     });
+
+    //handling undefined cases
     if (result[0] && result[0].candidates[0]) {
       return result[0].candidates[0].content;
   } else {
-      
+      console.log(result);
       return "No content generated"; // Or throw an error, log a message, etc.
   }
   } catch (error) {
