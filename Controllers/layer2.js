@@ -47,52 +47,54 @@ async function sendLayer2(req, res) {
   const resp = await generateText(context, examples, messages);
   if(!resp){
     res.status(502).json({error:"No response from PaLM2"})
+  }else{
+    // if(sizeInBytes>=20000){
+    //     messages.pop();
+    // }
+    messages.push({ content: resp });
+  
+    function getArraySizeInBytes(arr) {
+      var jsonString = JSON.stringify(arr);
+      var bytes = Buffer.from(jsonString).length;
+      return bytes;
+    }
+    var sizeInBytes = getArraySizeInBytes(messages);
+  
+    // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
+    console.log(`✨ ${resp}`);
+  
+  
+    const lines = resp.split("\n");
+  
+    lines.forEach((line) => {
+      if(/^\d/.test(line)){
+        const lesson = line.trim();
+        lessons.push(lesson);
+      }
+      else if (line.startsWith("* **") || line.startsWith("*")) {
+        const lesson = line.replace("* **", "").replace("*", "").trim();
+        lessons.push(lesson);
+      }
+    });
+  
+    console.log("🔥🔥", lessons);
+  
+    const lessonsJson = lessons.map((lessonStr) => {
+      const parts = lessonStr.split(/:\*{0,2}/);
+      return {
+        lessonName:parts[0],
+        lessonContent:parts[1]
+      }
+    });
+    console.log(lessonsJson);
+  
+    console.log(`Size of request payload: ${sizeInBytes} bytes`);
+    res.status(200).json(lessonsJson);
+  
+    // console.log(messages);
+    messages.push({ content: "NEXT REQUEST" });
+
   }
-  // if(sizeInBytes>=20000){
-  //     messages.pop();
-  // }
-  messages.push({ content: resp });
-
-  function getArraySizeInBytes(arr) {
-    var jsonString = JSON.stringify(arr);
-    var bytes = Buffer.from(jsonString).length;
-    return bytes;
-  }
-  var sizeInBytes = getArraySizeInBytes(messages);
-
-  // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-  console.log(`✨ ${resp}`);
-
-
-  const lines = resp.split("\n");
-
-  lines.forEach((line) => {
-    if(/^\d/.test(line)){
-      const lesson = line.trim();
-      lessons.push(lesson);
-    }
-    else if (line.startsWith("* **") || line.startsWith("*")) {
-      const lesson = line.replace("* **", "").replace("*", "").trim();
-      lessons.push(lesson);
-    }
-  });
-
-  console.log("🔥🔥", lessons);
-
-  const lessonsJson = lessons.map((lessonStr) => {
-    const parts = lessonStr.split(/:\*{0,2}/);
-    return {
-      lessonName:parts[0],
-      lessonContent:parts[1]
-    }
-  });
-  console.log(lessonsJson);
-
-  console.log(`Size of request payload: ${sizeInBytes} bytes`);
-  res.status(200).json(lessonsJson);
-
-  // console.log(messages);
-  messages.push({ content: "NEXT REQUEST" });
 }
 
 module.exports = sendLayer2;
