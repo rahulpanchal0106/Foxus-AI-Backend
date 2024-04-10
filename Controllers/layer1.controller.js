@@ -35,48 +35,53 @@ async function postLayer1(req, res) {
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
   const resp = await generateText(context, examples, messages);
+  
+  if(resp=='null'){
+    return res.status(501).json({error:"Error from chat-bison-001"})
+  }else{
 
-  // if(sizeInBytes>=20000){
-  //     messages.pop();
-  // }
-  messages.push({ content: resp });
-
-  function getArraySizeInBytes(arr) {
-    var jsonString = JSON.stringify(arr);
-    var bytes = Buffer.from(jsonString).length;
-    return bytes;
-  }
-  var sizeInBytes = getArraySizeInBytes(messages);
-
-  // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-  console.log(`✨ ${resp}`);
-
-  const lines = resp.split("\n");
-  const topics = [];
-
-  lines.forEach((line) => {
-    if (
-      line.startsWith("* **") ||
-      line.startsWith("*") ||
-      line.startsWith(" *")||
-      line.match(/^\d/)
-    ) {
-      const topicName = line.replace("* **", "").replace("*", "").trim();
-      topics.push(topicName);
+    // if(sizeInBytes>=20000){
+    //     messages.pop();
+    // }
+    messages.push({ content: resp });
+  
+    function getArraySizeInBytes(arr) {
+      var jsonString = JSON.stringify(arr);
+      var bytes = Buffer.from(jsonString).length;
+      return bytes;
     }
-  });
-
-  console.log("🔥🔥", topics);
-  const output = {
-    chapters: topics,
-    level: input.levelName,
-    subject: input.subject,
-  };
-  console.log(`Size of request payload: ${sizeInBytes} bytes`);
-  res.status(200).json(output);
-
-  // console.log(messages);
-  messages.push({ content: "NEXT REQUEST" });
+    var sizeInBytes = getArraySizeInBytes(messages);
+  
+    // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
+    console.log(`✨ ${resp}`);
+  
+    const lines = resp.split("\n");
+    const topics = [];
+  
+    lines.forEach((line) => {
+      if (
+        line.startsWith("* **") ||
+        line.startsWith("*") ||
+        line.startsWith(" *")||
+        line.match(/^\d/)
+      ) {
+        const topicName = line.replace("* **", "").replace("*", "").trim();
+        topics.push(topicName);
+      }
+    });
+  
+    console.log("🔥🔥", topics);
+    const output = {
+      chapters: topics,
+      level: input.levelName,
+      subject: input.subject,
+    };
+    console.log(`Size of request payload: ${sizeInBytes} bytes`);
+    res.status(200).json(output);
+  
+    // console.log(messages);
+    messages.push({ content: "NEXT REQUEST" });
+  }
 }
 
 module.exports = postLayer1;

@@ -29,7 +29,7 @@ async function generateText(context = "", examples = [], messages = []) {
   }
   } catch (error) {
     console.error("Error in generateText:", error);
-    return null; // Re-throw for handling in the calling function
+    return "null"; // Re-throw for handling in the calling function
   }
 }
 
