@@ -7,6 +7,7 @@ async function checkCreds(u, p) {
     const user = await prisma.users.findUnique({
       where: {
         username: u,
+        password:p
       },
     });
 
