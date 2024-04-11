@@ -1,47 +1,44 @@
-// Import necessary modules
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
-
-// Initialize Prisma client
 const prisma = new PrismaClient();
 
-// Secret key for JWT
 const secretKey = 'secretto';
 
-// Function to check if request is authentic
 async function isAuthentic(req) {
     try {
-        // Extract token from request headers
-        const token = req.headers.authorization;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return {authentic: false, message: 'Token header missing "Bearer" prefix'};
+        }
+        const token = authHeader.split(' ')[1];
 
-        if (!token) {
-            return false;
+        const decoded = jwt.decode(token);
+        if (decoded.exp <= Date.now() / 1000) {
+            console.log("expired ⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕")
+            return { authentic: false, message: 'Token has expired' };
         }
 
-        // Verify token
-        const decoded = await jwt.verify(token, secretKey);
-
-        // Check if user exists in the database (you can customize this part based on your user model)
+        const verifiedToken = await jwt.verify(token, secretKey);
         const user = await prisma.users.findUnique({
-            where: { username: decoded.username }
+            where: { username: verifiedToken.username }
         });
-
-        return user ? true : false;
+        return user ? {authentic: true, message: 'Token has been verified'} : {authentic: false, message: 'Invalid token'};
     } catch (error) {
         console.error('Error in isAuthentic:', error);
-        return false;
+        return {authentic: false, message: 'Error in isAuthentic()'};
     }
 }
 
-// Middleware function to authenticate requests
+
 async function auth(req, res, next) {
     try {
-        if (await isAuthentic(req)) {
-            console.log("Yea, shit's good, let it pass... 😀👍");
+        const jwtAuth = await isAuthentic(req);
+        if (jwtAuth.authentic) {
+            console.log("Token is verified");
             next();
         } else {
-            console.log("Unauthentic");
-            res.status(401).json({ message: 'Unauthorized' });
+            console.log();
+            res.status(401).json({ message: jwtAuth.message });
         }
     } catch (error) {
         console.error('Error in auth middleware:', error);

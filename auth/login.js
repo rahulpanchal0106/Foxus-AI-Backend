@@ -33,7 +33,7 @@ async function login(req, res) {
     if (matched) {
         const secretKey = 'secretto'
       console.log("✅✅✅ Matched!");
-      const token = jwt.sign({ username: matched.username}, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign({ username: matched.username}, secretKey, { expiresIn: '5h' });
       console.log(token);
       res.status(200).send({token});
     } else if(isNull(matched)) {
