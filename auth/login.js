@@ -5,11 +5,8 @@ const jwt = require('jsonwebtoken')
 async function checkCreds(u, p) {
   try {
     const user = await prisma.users.findUnique({
-      where: {
-        username: u,
-        password:p
-      },
-    });
+      where: { username: u }
+  });
 
     if (!user) {
       return false; // User not found
