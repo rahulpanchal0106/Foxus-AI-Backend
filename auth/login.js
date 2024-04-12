@@ -34,7 +34,7 @@ async function login(req, res) {
       const token = jwt.sign({ username: matched.username}, secretKey, { expiresIn: '5h' });
       console.log(token);
       res.status(200).send({token});
-    } else if(isNull(matched)) {
+    } else if(matched == null) {
         console.log("🔴🔴🔴 Wrong password");
         res.status(401).send("Wrong Password");
     } else{
