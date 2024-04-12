@@ -15,7 +15,7 @@ async function isAuthentic(req) {
         const decoded = jwt.decode(token);
         if (decoded.exp <= Date.now() / 1000) {
             console.log("expired ⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕")
-            return { authentic: false, message: 'Token has expired' };
+            return { authentic: false, message: 'Token is expired' };
         }
 
         const verifiedToken = await jwt.verify(token, secretKey);
