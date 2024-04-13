@@ -86,7 +86,7 @@ async function sendLayer0(req, res) {
     console.log(`Prompt arrived..... ${prompt}`);
     messages.push({ content: prompt });
 
-    const topicsText = await generateText(context, examples, messages);
+    // const topicsText = await generateText(context, examples, messages);
     lines.forEach((line) => {
       if (line.startsWith("* **") || line.startsWith("*")) {
         const level = line.replace("* **", "").replace("*", "").trim();

@@ -10,7 +10,7 @@ require("dotenv").config();
 // }
 async function sendLesson3(req, res) {
   const input = req.body.prompt;
-  const prompt = `Describe in details and give comprehensive insights about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the subject: ${input.subject}. This lesson is a part of the chapter: ${input.chapter}. At the level: ${input.level}.`;
+  const prompt = `Describe in details and give comprehensive insights about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the subject: ${input.subject}. This lesson is a part of the chapter: ${input.chapter}. At the level: ${input.levelName}.`;
   var messages = [];
 
   console.log("processing...");
@@ -26,7 +26,7 @@ async function sendLesson3(req, res) {
   });
 
   let PaLM_res;
-  const context = `Describe in details and give comprehensive insights about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the subject: ${input.subject}. This lesson is a part of the chapter: ${input.chapter}. At the level: ${input.level}.`;
+  const context = `Describe in details and give comprehensive insights about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the subject: ${input.subject}. This lesson is a part of the chapter: ${input.chapter}. At the level: ${input.levelName}.`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
