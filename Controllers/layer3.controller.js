@@ -49,7 +49,12 @@ async function sendLesson3(req, res) {
   // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
   console.log(`✨ ${resp}`);
   console.log(`Size of request payload: ${sizeInBytes} bytes`);
-  res.status(200).json({ result: `${resp}` });
+  if(resp=="No content generated"){
+    res.status(501).json({error:"No response from PaLM2"})
+  }else{
+
+    res.status(200).json({ result: `${resp}` });
+  }
 
   // console.log(messages);
   messages.push({ content: "NEXT REQUEST" });

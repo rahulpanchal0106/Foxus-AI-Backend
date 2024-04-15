@@ -9,7 +9,7 @@ require("dotenv").config();
 
 async function postLayer1(req, res) {
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
-  const prompt = `List out all possible chapters for the topic content: ${input.levelContent}, and topic level: ${input.levelName} `;
+  const prompt = `List possible chapers for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
   var messages = [];
 
   console.log("processing...");
@@ -38,6 +38,8 @@ async function postLayer1(req, res) {
   
   if(resp=='null'){
     return res.status(501).json({error:"Error from chat-bison-001"})
+  }else if(resp=="No content generated"){
+    res.status(501).json({error:"No response from PaLM2"})
   }else{
 
     // if(sizeInBytes>=20000){
@@ -75,6 +77,7 @@ async function postLayer1(req, res) {
       chapters: topics,
       level: input.levelName,
       subject: input.subject,
+      levelContent: input.levelContent
     };
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(output);
