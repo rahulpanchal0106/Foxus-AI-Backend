@@ -45,11 +45,11 @@ async function sendLayer0(req, res) {
   });
 
   let PaLM_res;
-  const context = `List appropriate levels of learning for the topic: ${prompt}. And Do not give any extra tips, just give what's being asked.`;
+  const context = `List appropriate levels of learning(Beginner,intermediate,expert,etc.) for the topic: ${prompt}.Try to write a very brief note next to the level name (like what is this level all about). Do not make a new section to describe the brief for each level.`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
-
+  const input = `List appropriate levels of learning for the topic or subject: ${prompt}. Try to write a very brief note next to the level name (like what is this level all about). `
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
   
