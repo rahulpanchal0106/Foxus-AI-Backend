@@ -16,17 +16,6 @@ async function sendLayer2(req, res) {
   lessons = [];
 
   console.log("processing...");
-
-  const { DiscussServiceClient } = require("@google-ai/generativelanguage");
-  const { GoogleAuth } = require("google-auth-library");
-
-  const MODEL_NAME = "models/chat-bison-001";
-  const API_KEY = process.env.API_KEY;
-
-  const client = new DiscussServiceClient({
-    authClient: new GoogleAuth().fromAPIKey(API_KEY),
-  });
-
   let PaLM_res;
   const context = `List all the possible lessons from the chapter: ${input.chapter} for the subject of ${input.subject} at level ${input.levelName}.   Try to write a very brief note about the lessons after the name of lessons`;
   const examples = [

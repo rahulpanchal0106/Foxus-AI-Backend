@@ -14,16 +14,6 @@ async function postLayer1(req, res) {
 
   console.log("processing...");
 
-  const { DiscussServiceClient } = require("@google-ai/generativelanguage");
-  const { GoogleAuth } = require("google-auth-library");
-
-  const MODEL_NAME = "models/chat-bison-001";
-  const API_KEY = process.env.API_KEY;
-
-  const client = new DiscussServiceClient({
-    authClient: new GoogleAuth().fromAPIKey(API_KEY),
-  });
-
   let PaLM_res;
   const level = req.body.level;
   // const context = `Give an array of possible lessons for the given topic ${prompt}. Consider the name of level : ${}`;
