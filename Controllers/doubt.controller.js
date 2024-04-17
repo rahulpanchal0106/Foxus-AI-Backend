@@ -12,7 +12,7 @@ async function sendLayer0(req, res) {
   console.log("processing...");
 
   let PaLM_res;
-  const context = `solve ${prompt} this in few words`;
+  const context = `give solution to ${prompt}  in short`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
