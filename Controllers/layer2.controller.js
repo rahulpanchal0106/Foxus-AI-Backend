@@ -34,8 +34,8 @@ async function sendLayer2(req, res) {
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
   const resp = await generateText(context, examples, messages);
-  if(!resp){
-    res.status(502).json({error:"No response from PaLM2"})
+  if(resp=='null' || resp=="No content generated"){
+    return res.status(501).json({error:"Error from chat-bison-001"})
   }else{
     // if(sizeInBytes>=20000){
     //     messages.pop();

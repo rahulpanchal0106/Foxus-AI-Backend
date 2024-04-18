@@ -45,14 +45,25 @@ async function sendLayer0(req, res) {
   });
 
   let PaLM_res;
-  const context = `List appropriate levels for the topic: ${prompt}. And Do not give any extra tips, just give what's being asked.`;
+  const context = `List appropriate levels of learning(Beginner,intermediate,expert,etc.) for the topic: ${prompt}.Try to write a very brief note next to the level name (like what is this level all about). Do not make a new section to describe the brief for each level.`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
-
+  const input = `List appropriate levels of learning for the topic or subject: ${prompt}. Try to write a very brief note next to the level name (like what is this level all about). `
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText(context, examples, messages);
+  
+  if (isDirectQuestion(prompt)) {
+    // Attempt to get a direct answer
+    const directAnswer = await getDirectAnswer(prompt, client);
+
+    if (directAnswer) {
+      res.status(200).json({ result: directAnswer });
+    } else {
+      res.status(200).json({ error: "Unable to find a direct answer" });
+    }
+  } else {
+    const resp = await generateText(context, examples, messages);
 
   // if(sizeInBytes>=20000){
   //     messages.pop();
@@ -70,23 +81,11 @@ async function sendLayer0(req, res) {
   console.log(`✨ ${resp}`);
 
   const lines = resp.split("\n");
-  if (isDirectQuestion(prompt)) {
-    // Attempt to get a direct answer
-    const directAnswer = await getDirectAnswer(prompt, client);
 
-    if (directAnswer) {
-      res.status(200).json({ result: directAnswer });
-    } else {
-      res.status(200).json({ error: "Unable to find a direct answer" });
-    }
-  } else {
     // Generate topics and explain the selected one
-    const context = `Give name of 5 topics related to ${prompt} in one word only`;
-    const examples = [];
-    console.log(`Prompt arrived..... ${prompt}`);
     messages.push({ content: prompt });
 
-    const topicsText = await generateText(context, examples, messages);
+    // const topicsText = await generateText(context, examples, messages);
     lines.forEach((line) => {
       if (line.startsWith("* **") || line.startsWith("*")) {
         const level = line.replace("* **", "").replace("*", "").trim();

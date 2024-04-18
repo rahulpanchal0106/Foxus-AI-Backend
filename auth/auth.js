@@ -15,7 +15,7 @@ async function isAuthentic(req) {
         const decoded = jwt.decode(token);
         if (decoded.exp <= Date.now() / 1000) {
             console.log("expired ⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕⭕")
-            return { authentic: false, message: 'Token has expired' };
+            return { authentic: false, message: 'Err... Token is expired :( You need to login again in order to get a new token.' };
         }
 
         const verifiedToken = await jwt.verify(token, secretKey);
@@ -25,7 +25,7 @@ async function isAuthentic(req) {
         return user ? {authentic: true, message: 'Token has been verified'} : {authentic: false, message: 'Invalid token'};
     } catch (error) {
         console.error('Error in isAuthentic:', error);
-        return {authentic: false, message: 'Error in isAuthentic()'};
+        return {authentic: false, message: `Authentication error on server. ${error}`};
     }
 }
 
@@ -37,12 +37,12 @@ async function auth(req, res, next) {
             console.log("Token is verified");
             next();
         } else {
-            console.log();
+            console.log("🥶🥶🥶🥶🥶",jwtAuth.message);
             res.status(401).json({ message: jwtAuth.message });
         }
     } catch (error) {
         console.error('Error in auth middleware:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Auth error on server' });
     }
 }
 
