@@ -5,14 +5,20 @@ var levels = [];
 //if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
 
 async function sendLayer0(req, res) {
-  const prompt = req.body.prompt;
+  const input = req.body.prompt;
+  const lesson = req.body.lessonName;
+  const chapter = req.body.chapter;
+  const subject = req.body.subject;
+  const lessonExplaination = req.body.lessonExplaination;
+  console.log(`🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥`,lesson,chapter,subject,lessonExplaination)
+  const prompt = `I have a doubt on the lesson:${lesson} from chapter:${chapter} of the subject:${subject}. The doubt is, ${input}`
   var messages = [];
   levels = [];
 
   console.log("processing...");
 
   let PaLM_res;
-  const context = `give solution to ${prompt}  in short`;
+  const context = `Answer the asked doubt on the lesson name:${lesson} from chapter:${chapter} of the subject:${subject}, The question will be regardning the following lesson: ${lessonExplaination}`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
