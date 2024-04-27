@@ -11,13 +11,13 @@ require("dotenv").config();
 var lessons = [];
 async function sendLayer2(req, res) {
   const input = req.body.prompt;
-  const prompt = `List out all possible lessons from chapter: ${input.chapter}. for the subject: ${input.subject}, that is of level: ${input.levelName}.  Try to write a very brief note about the lessons after the name of lessons.`;
+  const prompt = `List out all possible lessons from chapter: ${input.chapter}. for the subject: ${input.subject}, that is of level: ${input.levelName}.  Try to write a very brief note about the lessons along with the name of lessons. don't explain it again`;
   var messages = [];
   lessons = [];
 
   console.log("processing...");
   let PaLM_res;
-  const context = `List all the possible lessons from the chapter: ${input.chapter} for the subject of ${input.subject} at level ${input.levelName}.   Try to write a very brief note about the lessons after the name of lessons`;
+  const context = `List all the possible lessons from the chapter: ${input.chapter} for the subject of ${input.subject} at level ${input.levelName}.   Try to write a very brief note about the lessons along with the name of lessons don't explain it again`;
   const examples = [
     // {
     //   "input": { "content": "List out all possible lessons from chapter: Generating Code with Regular Expressions. for the subject: Reguler Expressions, that is of level: Intermediate.  Try to write a very brief note about the lessons after the name of lessons." },

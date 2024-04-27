@@ -9,7 +9,7 @@ require("dotenv").config();
 
 async function postLayer1(req, res) {
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
-  const prompt = `List possible chapers for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
+  const prompt = `List possible chapters for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
   var messages = [];
 
   console.log("processing...");
@@ -17,7 +17,7 @@ async function postLayer1(req, res) {
   let PaLM_res;
   const level = req.body.level;
   // const context = `Give an array of possible lessons for the given topic ${prompt}. Consider the name of level : ${}`;
-  const context = `List possible chapers for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
+  const context = `List possible chapters for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);
