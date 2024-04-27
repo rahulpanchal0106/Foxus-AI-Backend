@@ -14,7 +14,7 @@ async function sendLesson3(req, res) {
   var messages = [];
 
   console.log("processing...");
-
+  
   const { DiscussServiceClient } = require("@google-ai/generativelanguage");
   const { GoogleAuth } = require("google-auth-library");
 
