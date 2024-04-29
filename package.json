@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "pm2 start server.js -i max",
     "build": "npm install && prisma db pull --force && prisma generate"
   },
   "keywords": [],
