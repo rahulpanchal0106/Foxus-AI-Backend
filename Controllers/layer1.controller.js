@@ -9,7 +9,7 @@ require("dotenv").config();
 
 async function postLayer1(req, res) {
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
-  const prompt = `List possible chapters for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
+  const prompt = `List possible chapters for the ${input.levelName} level topic, that is about: ${input.levelContent}, and of the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
   var messages = [];
 
   console.log("processing...");

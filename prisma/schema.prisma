@@ -13,6 +13,24 @@ model User {
   name  String?
 }
 
+model Session {
+  id          Int      @id @map("_id")
+  prompt      String
+  startTime   DateTime @default(now())
+  endTime     DateTime?
+  sessionData SessionData[]
+}
+
+model SessionData {
+  id         Int      @id @map("_id")
+  request    Json
+  response   Json
+  timestamp  DateTime @default(now())
+  session    Session  @relation(fields: [sessionId], references: [id])
+  sessionId  Int
+}
+
+
 model Users {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   password String

@@ -45,13 +45,67 @@ async function sendLayer0(req, res) {
   });
 
   let PaLM_res;
-  const context = `List appropriate levels of learning(Beginner,intermediate,expert,etc.) for the topic: ${prompt}.Try to write a very brief note next to the level name (like what is this level all about). Do not make a new section to describe the brief for each level.`;
-  const examples = [];
+  const context = `List three levels of learning(Beginner,intermediate,expert) for the topic: ${prompt}. Here, do not explain in detail about the levels`;
+  const examples = [
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Three.js. " },
+      "output": { "content": `Three.js is a cross-browser JavaScript library for creating and manipulating 3D graphics in web pages. It is based on WebGL, the open-standard API for rendering interactive 3D graphics within any compatible web browser.Three.js is a powerful and versatile library that can be used to create a wide variety of 3D applications, from simple 3D scenes to complex games and simulations. It is well-documented and has a large community of users and developers who can provide support and help with troubleshooting.Three.js is a great choice for anyone who wants to learn how to create 3D graphics in web pages. It is relatively easy to learn for beginners, but it also offers a lot of flexibility and power for more experienced developers.Here are three levels of learning for Three.js:
+      * **Beginner:** This level is for people who are new to Three.js and want to learn the basics of how to use the library. This includes topics such as creating a scene, adding objects to the scene, and manipulating the camera.
+      * **Intermediate:** This level is for people who have a basic understanding of Three.js and want to learn more advanced topics such as lighting, shadows, and animation.
+      * **Expert:** This level is for people who are experienced with Three.js and want to learn how to create complex 3D applications. This includes topics such as physics, particles, and shaders.Each level of learning builds on the previous level, so it is important to start with the basics and work your way up. There are many resources available online to help you learn Three.js, including tutorials, documentation, and example code.Once you have a basic understanding of Three.js, you can start creating your own 3D applications. 
+      There are many possibilities, so let your imagination run wild! ` }
+    },
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Three.js. " },
+      "output": { "content": `Sure. Here are three levels of learning for the topic of 3D Portfolio Design using Three.js:
+      * **Beginner:** This level is for people who are new to 3D design and want to learn the basics of Three.js. Topics covered at this level include setting up a development environment, creating basic 3D objects, and animating objects.
+      * **Intermediate:** This level is for people who have a basic understanding of Three.js and want to learn more advanced topics, such as lighting, materials, and shaders. Topics covered at this level include creating more complex 3D objects, using materials to create realistic textures, and using shaders to create special effects.
+      * **Expert:** This level is for people who are proficient in Three.js and want to learn how to create professional-quality 3D content. Topics covered at this level include creating 3D models from scratch, using Three.js to create interactive 3D applications, and using Three.js to create 3D animations.
+      I hope this helps! `}
+    },
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Sudoku." },
+      "output": { "content": `Sudoku is a logic-based, number-placement puzzle game. The objective is to fill a 9x9 grid with digits so that each row, column, and 3x3 subgrid contains all of the digits from 1 to 9.
+      There are three levels of learning for Sudoku:
+      * **Beginner:** This level is for people who are new to Sudoku and want to learn the basics of the game. Topics covered at this level include how to set up a Sudoku puzzle, how to identify the empty cells, and how to use the elimination method to solve the puzzle.
+      * **Intermediate:** This level is for people who have a basic understanding of Sudoku and want to learn more advanced techniques, such as pattern recognition and backsolving. Topics covered at this level include how to identify common patterns in Sudoku puzzles, how to use backsolving to solve difficult puzzles, and how to solve Sudoku puzzles without using pencil marks.
+      * **Expert:** This level is for people who are experienced with Sudoku and want to learn how to solve the most difficult puzzles. Topics covered at this level include how to identify and solve unique patterns, how to use advanced techniques such as x-wing and swordfish, and how to solve Sudoku puzzles in a timely manner.
+      Each level of learning builds on the previous level, so it is important to start with the basics and work your way up. There are many resources available online to help you learn Sudoku, including tutorials, puzzles, and forums.
+      Once you have a basic understanding of Sudoku, you can start solving puzzles of increasing difficulty. There are many different types of Sudoku puzzles available, so you can find one that is appropriate for your skill level. Sudoku is a great way to improve your problem-solving skills, and it is also a fun and challenging game.`}
+    },
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Chess." },
+      "output": { "content": `Here are three levels of learning for the topic of Chess:
+      * **Beginner:** This level is for people who are new to Chess and want to learn the basics of the game. Topics covered at this level include the rules of the game, how the pieces move, and basic opening principles.
+      * **Intermediate:** This level is for people who have a basic understanding of Chess and want to learn more advanced topics, such as tactics, strategy, and endgame play. Topics covered at this level include common opening variations, how to identify and execute tactical motifs, and how to build a winning endgame position.
+      * **Expert:** This level is for people who are proficient in Chess and want to learn how to play at the highest level. Topics covered at this level include opening preparation, endgame technique, and positional play. Topics covered at this level include studying the games of the great masters, analyzing your own games, and playing in tournaments.
+      Each level of learning builds on the previous level, so it is important to start with the basics and work your way up. There are many resources available online to help you learn Chess, including tutorials, videos, and books. Once you have a basic understanding of the game, you can start playing against other people and practicing your skills.
+      Chess is a complex and challenging game, but it is also very rewarding. With dedication and practice, you can improve your skills and become a better player.`}
+    },
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Embedded Systems." },
+      "output": { "content": ` Embedded systems are computer systems that are designed to perform a specific task with minimal human intervention. They are used in a wide variety of applications, including automobiles, medical devices, and industrial control systems.
+      There are three levels of learning for embedded systems:
+      * **Beginner:** This level is for people who are new to embedded systems and want to learn the basics of how they work. Topics covered at this level include the components of an embedded system, the different types of embedded systems, and the programming languages used to develop embedded systems.
+      * **Intermediate:** This level is for people who have a basic understanding of embedded systems and want to learn more advanced topics, such as hardware design, software development, and system integration. Topics covered at this level include the design of embedded systems, the development of embedded software, and the integration of embedded systems into larger systems.
+      * **Expert:** This level is for people who are experienced with embedded systems and want to learn how to design and develop complex embedded systems. Topics covered at this level include the design of high-performance embedded systems, the development of real-time embedded systems, and the integration of embedded systems with other technologies.
+      There are many resources available online to help you learn about embedded systems, including tutorials, documentation, and example code. You can also find many books and online courses on embedded systems.
+      If you are interested in learning about embedded systems, I recommend starting with the beginner level and working your way up to the intermediate and expert levels. There is a lot to learn about embedded systems, but it is a rewarding field to work in.`}
+    },
+    {
+      "input": { "content": "List appropriate levels of learning for the topic or subject: Machine Learning." },
+      "output": { "content": ` Here are three levels of learning for the topic of machine learning:
+      * **Beginner:** This level is for people who are new to machine learning and want to learn the basics. Topics covered at this level include supervised learning, unsupervised learning, and reinforcement learning.
+      * **Intermediate:** This level is for people who have a basic understanding of machine learning and want to learn more advanced topics, such as deep learning and natural language processing. Topics covered at this level include neural networks, convolutional neural networks, and recurrent neural networks.
+      * **Expert:** This level is for people who are proficient in machine learning and want to learn how to create and apply machine learning models to real-world problems. Topics covered at this level include machine learning algorithms, machine learning pipelines, and machine learning evaluation.
+      I hope this helps!`}
+    }
+  ];
 
   console.log(`Prompt arrived..... ${prompt}`);
-  const input = `List appropriate levels of learning for the topic or subject: ${prompt}. Try to write a very brief note next to the level name (like what is this level all about). `
+  const input = `List appropriate levels of learning for the topic or subject: ${prompt}. `
   // log(`Prompt arrived..... ${prompt}`);
-  messages.push({ content: prompt });
+  messages.push({ content: input });
   
   if (isDirectQuestion(prompt)) {
     // Attempt to get a direct answer
