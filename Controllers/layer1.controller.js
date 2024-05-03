@@ -9,7 +9,7 @@ require("dotenv").config();
 
 async function postLayer1(req, res) {
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
-  const prompt = `List possible chapters for the ${input.levelName} level topic, that is about: ${input.levelContent}, and of the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
+  const prompt = `List possible chapters for the ${input.levelName} level  Subject: ${input.subject}. It must be a final list of all the possible chapters. Let me give you a brief intro: ${input.levelContent},here please try to provide more number of chapters  if possible along with the topics that are to be included as per the brief intro.Additionally do not give any additional information about the chapters.`;
   var messages = [];
 
   console.log("processing...");
@@ -17,7 +17,7 @@ async function postLayer1(req, res) {
   let PaLM_res;
   const level = req.body.level;
   // const context = `Give an array of possible lessons for the given topic ${prompt}. Consider the name of level : ${}`;
-  const context = `List possible chapters for the topic content: ${input.levelContent}, for topic level: ${input.levelName}, and the Subject: ${input.subject}. It must be a final list of all the possible chapters`;
+  const context = `List possible chapters for the ${input.levelName} level  Subject: ${input.subject}. It must be a final list of all the possible chapters. Let me give you a brief intro: ${input.levelContent}, here please try to provide more number of chapters  if possible along with the topics that are to be included as per the brief intro. Additionally do not give any additional information about the chapters`;
   const examples = [
     {
       "input": { "content": "List possible chapters for the Beginner level topic, that is about: This level is for people who are new to Java and want to learn the basics of the language. Topics covered at this level include variables, data types, operators, control flow statements, and arrays., and of the Subject: Java. It must be a final list of all the possible chapters" },
@@ -117,6 +117,7 @@ These are just some of the many topics that could be covered in a beginner-level
     * The Big Bang
 This list is just a suggestion, and the specific chapters that are included in a course will vary depending on the instructor and the level of the students.`}
     }
+    
   ];
 
   console.log(`Prompt arrived..... ${prompt}`);
