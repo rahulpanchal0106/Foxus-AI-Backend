@@ -20,12 +20,13 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "highlight.js": "^11.9.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "katex": "^0.16.10"
   },
   "devDependencies": {
     "morgan": "^1.10.0",
-    "pm2":"^5.2.1",
     "nodemon": "^3.1.0",
+    "pm2": "^5.2.1",
     "prisma": "^5.13.0"
   }
 }
