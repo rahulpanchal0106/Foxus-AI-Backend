@@ -103,7 +103,7 @@ async function sendLayer0(req, res) {
   ];
 
   console.log(`Prompt arrived..... ${prompt}`);
-  const input = `List appropriate levels of learning for the topic or subject: ${prompt}. `
+  const input = `List three or four levels of learning for the topic or subject: ${prompt}. do not go in details just write a brief note along with the level names. `
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: input });
   
@@ -165,7 +165,7 @@ async function sendLayer0(req, res) {
         const [name, content] = levelStr.split(":");
         return {
           levelName: name.trim(),
-          levelContent: content ? content.trim() : "", // Handle case where there's no content after ":"
+          levelContent: content ? content.trim() : "",
           subject: prompt,
         };
       }
