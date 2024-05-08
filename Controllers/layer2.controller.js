@@ -139,7 +139,7 @@ async function sendLayer2(req, res) {
         activity: history_array
       }
     })
-
+    console.log("layer2 data updated on db") 
   }
 }
 

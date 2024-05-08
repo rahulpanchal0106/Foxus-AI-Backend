@@ -90,6 +90,7 @@ async function sendLesson3(req, res) {
       activity: history_array
     }
   })
+  console.log("layer3 data updated on db")
 }
 
 module.exports = sendLesson3;

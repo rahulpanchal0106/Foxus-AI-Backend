@@ -210,7 +210,7 @@ async function sendLayer0(req, res) {
       }
     });
     
-
+    console.log("layer1 data updated on db")
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(levelsJson);
   }

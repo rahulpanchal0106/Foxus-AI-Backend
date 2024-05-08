@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2-runtime start server.js -i max",
-    "build": "npm install && prisma db pull --force && prisma generate"
+    "build": "npm install && prisma generate"
   },
   "keywords": [],
   "author": "",
