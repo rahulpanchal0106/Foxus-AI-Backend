@@ -1,7 +1,12 @@
 require("dotenv").config();
+const {PrismaClient} = require('@prisma/client')
+const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken')
 //REQUIREMENTS: req.body must have prompt:"<SUBJECT NAME>"
 const { generateText } = require("../utils/Result");
+const { response } = require("../app");
 var levels = [];
+const secretKey = 'secretto';
 //if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
 function isDirectQuestion(question) {
   const directKeywords = [
@@ -28,7 +33,18 @@ async function getDirectAnswer(question, client) {
   return topicsText;
 }
 async function sendLayer0(req, res) {
+
+  //Decoding username from cookie
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(' ')[1];
+  const decoded = jwt.decode(token);
+  
+  const username = decoded.username;
+
+
   const prompt = req.body.prompt;
+
+  
   var messages = [];
   levels = [];
 
@@ -107,6 +123,8 @@ async function sendLayer0(req, res) {
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: input });
   
+  
+  
   if (isDirectQuestion(prompt)) {
     // Attempt to get a direct answer
     const directAnswer = await getDirectAnswer(prompt, client);
@@ -171,6 +189,27 @@ async function sendLayer0(req, res) {
       }
     });
     console.log(levelsJson);
+    const dateObj = new Date();
+    const currentTime = dateObj.toISOString();
+
+    
+
+    await prisma.users.update({
+      where: { username: username },
+      data: {
+        activity: {
+          push:{
+            time: currentTime,
+            layer0: {
+              prompt: prompt,
+              response: levelsJson,
+              layer1:[]
+            }
+          }
+        }
+      }
+    });
+    
 
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(levelsJson);

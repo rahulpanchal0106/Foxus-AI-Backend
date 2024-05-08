@@ -4,12 +4,17 @@ async function postUser(req,res){
     try {
         // Extract user data from request body
         const { username, password } = req.body;
+        const ip_address = req.ip;
+        console.log(">>>>> ",ip_address)
+        const activity = [];
     
         // Create a new user in the database using Prisma Client
         const newUser = await prisma.users.create({
           data: {
+            ip_address,
             username,
             password,
+            activity
           },
         });
     

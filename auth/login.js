@@ -26,8 +26,31 @@ async function checkCreds(u, p) {
 async function login(req, res) {
   console.log("... login ... \n");
   const { username, password } = req.body;
+  var dateObj = new Date();
+  const currentTime = dateObj.toISOString();
   try {
+
+
     const matched = await checkCreds(username, password);
+
+    const userHistory = await prisma.users.findUnique({
+      where: { username: username}
+    })
+    console.log("~~~~~~~~~~~~~~~~ ",userHistory)
+    
+
+    await prisma.users.update({
+      where: { username: username },
+      data: {
+        activity:{
+          push:{
+            loginTime: currentTime
+          }
+        }
+      }
+    })
+    console.log(">> pushed to db")
+    
     if (matched) {
         const secretKey = 'secretto'
       console.log("✅✅✅ Matched!");

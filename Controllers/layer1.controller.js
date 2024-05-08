@@ -1,5 +1,9 @@
 const { generateText } = require("../utils/Result");
 
+const {PrismaClient} = require('@prisma/client')
+const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken')
+
 require("dotenv").config();
 
 //REQUIREMENTS: req.body must have prompt:{
@@ -8,6 +12,13 @@ require("dotenv").config();
 // "subject":"<SUBJECT NAME>" }
 
 async function postLayer1(req, res) {
+    //Decoding username from cookie
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.decode(token);
+    
+    const username = decoded.username;
+
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
   const prompt = `List possible chapters for the ${input.levelName} level  Subject: ${input.subject}. It must be a final list of all the possible chapters. Let me give you a brief intro: ${input.levelContent},here please try to provide more number of chapters  if possible along with the topics that are to be included as per the brief intro.Additionally do not give any additional information about the chapters.`;
   var messages = [];
@@ -171,6 +182,29 @@ This list is just a suggestion, and the specific chapters that are included in a
     };
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(output);
+
+    const userHistory = await prisma.users.findUnique({
+      where: { username: username}
+    })
+    const history_array = userHistory.activity;
+    
+    var layer1_updated = history_array[history_array.length-1].layer0.layer1 
+    layer1_updated.push(
+      {
+        prompt: input,
+        response: output,
+        layer2:[]
+      }
+    )
+    
+    await prisma.users.update({
+      where: { username: username },
+      data: {
+        activity: history_array
+      }
+    });
+    
+    console.log("layer1 data updated on db")
   
     // console.log(messages);
     messages.push({ content: "NEXT REQUEST" });

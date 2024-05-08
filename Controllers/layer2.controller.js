@@ -1,5 +1,9 @@
 const { generateText } = require("../utils/Result");
 
+const {PrismaClient} = require('@prisma/client')
+const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken')
+
 require("dotenv").config();
 
 //REQUIREMENTS: req.body must have prompt:{
@@ -10,6 +14,12 @@ require("dotenv").config();
 
 var lessons = [];
 async function sendLayer2(req, res) {
+      //Decoding username from cookie
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.decode(token);
+      
+      const username = decoded.username;
   const input = req.body.prompt;
   const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names.`;
   var messages = [];
@@ -107,6 +117,28 @@ async function sendLayer2(req, res) {
   
     // console.log(messages);
     messages.push({ content: "NEXT REQUEST" });
+
+
+    const userHistory = await prisma.users.findUnique({
+      where: { username: username}
+    })
+    const history_array = userHistory.activity;
+    
+    
+
+    var layer2_updated = history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2
+    layer2_updated.push( {
+      prompt: input,
+      response: lessonsJson,
+      layer3:[]
+    });
+    
+    await prisma.users.update({
+      where: {username: username},
+      data:{
+        activity: history_array
+      }
+    })
 
   }
 }
