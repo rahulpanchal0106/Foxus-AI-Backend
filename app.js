@@ -19,7 +19,7 @@ const postDoubt = require('./Controllers/doubt.controller.js')
 const auth = require('./auth/auth.js')
 const postMessage = require("./Controllers/postMessage.controller.js");
 const { login } = require("./auth/login.js");
-
+const getActivity = require("./Controllers/activity.controller.js")
 app.use(express.json());
 app.use(cors());
 
@@ -34,5 +34,6 @@ app.post('/layer0',auth,sendLayer0)
 app.post("/send", postMessage);
 app.post('/quiz',getQuiz);
 app.post('/doubt', postDoubt)
+app.get('/activity',auth,getActivity);
 // console.log(explainTopic);
 module.exports = app;
