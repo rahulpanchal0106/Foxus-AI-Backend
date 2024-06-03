@@ -21,6 +21,10 @@ async function sendLayer2(req, res) {
       
       const username = decoded.username;
   const input = req.body.prompt;
+  const index = req.body.index;
+
+  console.log("index l1-arr: ",index)
+
   const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names.`;
   var messages = [];
   lessons = [];
@@ -126,13 +130,33 @@ async function sendLayer2(req, res) {
     
     
 
-    var layer2_updated = history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2
-    layer2_updated.push( {
+    // const max_l2_length = history_array[history_array.length-1].layer0.layer1[index].response.chapters.length;
+    const max_l2_length = 17;
+    history_array[history_array.length-1].layer0.layer1_indecies.push(index);
+    
+    console.log("😶‍🌫️😶‍🌫️😶‍🌫️ ",history_array[history_array.length-1].layer0.layer1)
+    console.log("🤡🤡🤡 ",index, max_l2_length)
+    const l1_index_arr = history_array[history_array.length-1].layer0.layer0_indecies;
+    console.log("🙌🙌🙌 ",l1_index_arr[l1_index_arr.length-1])
+    var layer2_updated = history_array[history_array.length-1].layer0.layer1[l1_index_arr[l1_index_arr.length-1]].layer2;
+
+
+    layer2_updated.length = max_l2_length;
+    
+    for (let i = 0; i < layer2_updated.length; i++) {
+      if (layer2_updated[i] === undefined) {
+        layer2_updated[i] = null;
+      }
+    }
+
+    layer2_updated[index]= {
       prompt: input,
       response: lessonsJson,
       layer3:[]
-    });
-    
+    }
+
+    console.log("🟨🟨🟨🟨 ",layer2_updated, "\n CCCCCCCCCC ",max_l2_length, "\n UUUUU ",layer2_updated.length)
+
     await prisma.users.update({
       where: {username: username},
       data:{

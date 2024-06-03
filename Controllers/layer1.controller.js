@@ -27,6 +27,7 @@ async function postLayer1(req, res) {
 
   let PaLM_res;
   const level = req.body.level;
+  var index = req.body.index;
   // const context = `Give an array of possible lessons for the given topic ${prompt}. Consider the name of level : ${}`;
   const context = `List possible chapters for the ${input.levelName} level  Subject: ${input.subject}. It must be a final list of all the possible chapters. Let me give you a brief intro: ${input.levelContent}, here please try to provide more number of chapters  if possible along with the topics that are to be included as per the brief intro. Additionally do not give any additional information about the chapters`;
   const examples = [
@@ -188,21 +189,42 @@ This list is just a suggestion, and the specific chapters that are included in a
     })
     const history_array = userHistory.activity;
     
-    var layer1_updated = history_array[history_array.length-1].layer0.layer1 
-    layer1_updated.push(
-      {
-        prompt: input,
-        response: output,
-        layer2:[]
-      }
-    )
+    console.log("l0_index: ",index);
+
+    //const max_l1_length = history_array[history_array.length-1].layer0.response.length;
+    const max_l1_length = 15
     
-    await prisma.users.update({
-      where: { username: username },
-      data: {
-        activity: history_array
+    var layer1_updated = history_array[history_array.length-1].layer0.layer1;
+
+    layer1_updated.length = max_l1_length;
+    
+    for (let i = 0; i < layer1_updated.length; i++) {
+      if (layer1_updated[i] === undefined) {
+        layer1_updated[i] = null;
       }
-    });
+    }
+    // const layer0_indecies = req.body.layer0_indecies;
+    if(history_array[history_array.length-1].layer0.layer1_indecies.length!=0){
+      index=history_array[history_array.length-1].layer0.layer1_indecies[history_array[history_array.length-1].layer0.layer1_indecies.length-1]
+    }
+    history_array[history_array.length-1].layer0.layer0_indecies.push(index)
+    
+    layer1_updated[index] = 
+    {
+      prompt: input,
+      response: output,
+      layer2:[]
+    }
+    
+    console.log("🟩🟩🟩🟩 ",layer1_updated, "\n CCCCCCCCCC ",max_l1_length, "\n UUUUU ",layer1_updated.length)
+      await prisma.users.update(
+        {
+        where: { username: username },
+        data: {
+          activity: history_array
+        }
+      }
+    );
     
     console.log("layer1 data updated on db")
   

@@ -14,5 +14,3 @@ model Users {
   username   String    @unique
   activity   Json[]
 }
-
-

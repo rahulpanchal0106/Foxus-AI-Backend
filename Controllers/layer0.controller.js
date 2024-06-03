@@ -203,7 +203,9 @@ async function sendLayer0(req, res) {
             layer0: {
               prompt: prompt,
               response: levelsJson,
-              layer1:[]
+              layer1:[],
+              layer0_indecies:[],
+              layer1_indecies:[],
             }
           }
         }
