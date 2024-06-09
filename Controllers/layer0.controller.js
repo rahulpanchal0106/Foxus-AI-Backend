@@ -10,13 +10,30 @@ const secretKey = 'secretto';
 //if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
 function isDirectQuestion(question) {
   const directKeywords = [
-    "what is",
-    "who is",
-    "how many",
-    "when did",
+    "what",
+    "who",
+    "how",
+    "when",
+    "where",
     "definition",
     "capital",
     "formula",
+    "define",
+    "explain",
+    "describe",
+    "list",
+    "name",
+    "identify",
+    "which",
+    "is",
+    "can",
+    "are",
+    "could",
+    "should",
+    "do",
+    "does",
+    "why",
+    "must"
   ];
   return directKeywords.some((keyword) =>
     question.toLowerCase().startsWith(keyword)
