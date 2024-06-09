@@ -108,7 +108,9 @@ async function sendLayer2(req, res) {
     //console.log("🔥🔥", lessons);
   
     const lessonsJson = lessons.map((lessonStr) => {
-      const parts = lessonStr.split(/:\*{0,2}/);
+//      const parts = lessonStr.split(/:\*{0,2}/);
+          const parts = lessonStr.split(/[:*]+/);
+
       return {
         lessonName:parts[0],
         lessonContent:parts[1]
