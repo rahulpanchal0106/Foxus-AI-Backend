@@ -23,7 +23,7 @@ async function sendLayer2(req, res) {
   const input = req.body.prompt;
   const index = req.body.index;
 
-  console.log("index l1-arr: ",index)
+  //console.log("index l1-arr: ",index)
 
   const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names.`;
   var messages = [];
@@ -89,7 +89,7 @@ async function sendLayer2(req, res) {
     var sizeInBytes = getArraySizeInBytes(messages);
   
     // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-    console.log(`✨ ${resp}`);
+    //console.log(`✨ ${resp}`);
   
   
     const lines = resp.split("\n");
@@ -105,7 +105,7 @@ async function sendLayer2(req, res) {
       }
     });
   
-    console.log("🔥🔥", lessons);
+    //console.log("🔥🔥", lessons);
   
     const lessonsJson = lessons.map((lessonStr) => {
       const parts = lessonStr.split(/:\*{0,2}/);
@@ -114,7 +114,7 @@ async function sendLayer2(req, res) {
         lessonContent:parts[1]
       }
     });
-    console.log(lessonsJson);
+    console.log("🔥 Lessons JSON: ",lessonsJson);
   
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(lessonsJson);
@@ -134,10 +134,10 @@ async function sendLayer2(req, res) {
     const max_l2_length = 17;
     history_array[history_array.length-1].layer0.layer1_indecies.push(index);
     
-    console.log("😶‍🌫️😶‍🌫️😶‍🌫️ ",history_array[history_array.length-1].layer0.layer1)
-    console.log("🤡🤡🤡 ",index, max_l2_length)
+    //console.log("😶‍🌫️😶‍🌫️😶‍🌫️ ",history_array[history_array.length-1].layer0.layer1)
+    //console.log("🤡🤡🤡 ",index, max_l2_length)
     const l1_index_arr = history_array[history_array.length-1].layer0.layer0_indecies;
-    console.log("🙌🙌🙌 ",l1_index_arr[l1_index_arr.length-1])
+   // console.log("🙌🙌🙌 ",l1_index_arr[l1_index_arr.length-1])
     var layer2_updated = history_array[history_array.length-1].layer0.layer1[l1_index_arr[l1_index_arr.length-1]].layer2;
 
 
@@ -155,7 +155,7 @@ async function sendLayer2(req, res) {
       layer3:[]
     }
 
-    console.log("🟨🟨🟨🟨 ",layer2_updated, "\n CCCCCCCCCC ",max_l2_length, "\n UUUUU ",layer2_updated.length)
+    //console.log("🟨🟨🟨🟨 ",layer2_updated, "\n CCCCCCCCCC ",max_l2_length, "\n UUUUU ",layer2_updated.length)
 
     await prisma.users.update({
       where: {username: username},
