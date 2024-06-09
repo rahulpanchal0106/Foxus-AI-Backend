@@ -46,7 +46,7 @@ async function getDirectAnswer(question, client) {
 
   const topicsText = await generateText(context, examples, messages);
 
-  console.log(topicsText);
+  //console.log(topicsText);
   return topicsText;
 }
 async function sendLayer0(req, res) {
@@ -167,7 +167,7 @@ async function sendLayer0(req, res) {
   var sizeInBytes = getArraySizeInBytes(messages);
 
   // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-  console.log(`✨ ${resp}`);
+  //console.log(`✨ ${resp}`);
 
   const lines = resp.split("\n");
 
@@ -182,7 +182,7 @@ async function sendLayer0(req, res) {
       }
     });
 
-    console.log("🔥🔥", levels);
+    //console.log("🔥🔥 Levels: ", levels);
 
     const levelsJson = levels.map((levelStr) => {
       // Check if the string contains ":*"
@@ -205,7 +205,7 @@ async function sendLayer0(req, res) {
         };
       }
     });
-    console.log(levelsJson);
+    console.log("🔥 Levels JSON: ",levelsJson);
     const dateObj = new Date();
     const currentTime = dateObj.toISOString();
 
@@ -229,7 +229,7 @@ async function sendLayer0(req, res) {
       }
     });
     
-    console.log("layer1 data updated on db")
+    console.log("layer0 data updated on db")
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(levelsJson);
   }
