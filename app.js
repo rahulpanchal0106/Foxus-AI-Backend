@@ -25,6 +25,9 @@ app.use(cors());
 
 app.use(morgan('combined'))
 app.post('/login', login);
+//app.post('/signup', (req,res)=>{
+//  res.status(401).send("Join the waitlist to get access to our app!   https://forms.gle/AfcJwz5mMZkMHADL6")
+//} );        //postuser
 app.post('/signup',postUser);
 app.get('/',getHome);
 app.post('/layer3',auth,sendLayer3);

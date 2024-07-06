@@ -15,7 +15,7 @@ async function getActivity(req,res){
         const doc = await prisma.users.findUnique({
             where: {username: username}
         })
-        console.log("Query ended\n",doc)
+        //console.log("Query ended\n",doc)
         res.status(200).json(doc.activity);
     }catch(err){
         console.log(err);

@@ -21,7 +21,8 @@ async function sendLesson3(req, res) {
    const username = decoded.username;
 
   const input = req.body.prompt;
-  console.log("🐸🐸🐸 ",input)
+  var index = req.body.index;
+  //console.log("🐸🐸🐸 ",input)
   const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
   var messages = [];
 
@@ -76,13 +77,25 @@ async function sendLesson3(req, res) {
   })
   const history_array = userHistory.activity;
   
-
-  var layer3_updated = history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2[history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2.length-1].layer3
-  layer3_updated.push( {
+  const layer1_indecies = history_array[history_array.length-1].layer0.layer1_indecies;
+  const layer0_indecies = history_array[history_array.length-1].layer0.layer0_indecies;
+  //console.log("}}}}}}}}} layer1_indecies ", layer1_indecies);
+  // var layer3_updated = history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2[history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2.length-1].layer3
+  var layer3_updated = history_array[history_array.length-1].layer0.layer1[layer0_indecies[layer0_indecies.length-1]].layer2[layer1_indecies[layer1_indecies.length-1]].layer3
+  const max_l3_length = 17;
+  layer3_updated.length = max_l3_length;
+  for (let i = 0; i < layer3_updated.length; i++) {
+    if (layer3_updated[i] === undefined) {
+      layer3_updated[i] = null;
+    }
+  }
+  
+  layer3_updated[index]= {
     prompt: input,
     response: resp,
     
-  });
+  };
+
   
   await prisma.users.update({
     where: {username: username},
