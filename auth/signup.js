@@ -17,13 +17,17 @@ async function postUser(req,res){
             activity
           },
         });
-    
+        console.log("🌟🌟🌟🌟 ",newUser)
         // Send a success response with the newly created user
         res.status(201).json(newUser);
       } catch (error) {
         // If an error occurs, send a 500 Internal Server Error response
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('💥💥 Error creating user:', error);
+        if(error.code=='P2002'){
+          console.log("ALREADY EXISTS")  
+          return res.status(409).json({error:`User already exists`})
+        }
+        res.status(500).json({ error: error });
     }
 }
 module.exports = postUser;

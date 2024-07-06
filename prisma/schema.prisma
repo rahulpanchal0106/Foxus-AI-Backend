@@ -7,10 +7,157 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type UsersActivity {
+  layer0    UsersActivityLayer0?
+  loginTime String?
+  prompt    String?
+  push      UsersActivityPush?
+  response  String?
+  sessions  UsersActivitySessions?
+  time      String?
+}
+
+type UsersActivityLayer0 {
+  layer1   UsersActivityLayer0Layer1[]
+  prompt   String
+  response UsersActivityLayer0Response[]
+}
+
+type UsersActivityLayer0Layer1 {
+  layer2   UsersActivityLayer0Layer1Layer2[]
+  prompt   UsersActivityLayer0Layer1Prompt
+  response UsersActivityLayer0Layer1Response
+}
+
+type UsersActivityLayer0Layer1Layer2 {
+  layer3   UsersActivityLayer0Layer1Layer2Layer3[]
+  prompt   UsersActivityLayer0Layer1Layer2Prompt
+  response UsersActivityLayer0Layer1Layer2Response[]
+}
+
+type UsersActivityLayer0Layer1Layer2Layer3 {
+  prompt   UsersActivityLayer0Layer1Layer2Layer3Prompt
+  response String
+}
+
+type UsersActivityLayer0Layer1Layer2Layer3Prompt {
+  chapter       String
+  lessonContent String?
+  lessonName    String
+  levelName     String
+  subject       String
+}
+
+type UsersActivityLayer0Layer1Layer2Prompt {
+  chapter   String
+  levelName String
+  subject   String
+}
+
+type UsersActivityLayer0Layer1Layer2Response {
+  lessonContent String?
+  lessonName    String
+}
+
+type UsersActivityLayer0Layer1Prompt {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+type UsersActivityLayer0Layer1Response {
+  chapters     String[]
+  level        String
+  levelContent String
+  subject      String
+}
+
+type UsersActivityLayer0Response {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+type UsersActivityPush {
+  layer0    UsersActivityPushLayer0?
+  loginTime String?
+  sessions  UsersActivityPushSessions?
+  time      String?
+}
+
+type UsersActivityPushLayer0 {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  layer1   Json?
+  prompt   String
+  response UsersActivityPushLayer0Response[]
+}
+
+type UsersActivityPushLayer0Response {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+type UsersActivityPushSessions {
+  prompt   String
+  response UsersActivityPushSessionsResponse[]
+  time     String
+}
+
+type UsersActivityPushSessionsResponse {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+type UsersActivitySessions {
+  prompt   String?
+  push     UsersActivitySessionsPush?
+  response UsersActivitySessionsResponse[]
+  time     String?
+}
+
+type UsersActivitySessionsPush {
+  prompt   String
+  response UsersActivitySessionsPushResponse[]
+  time     String
+}
+
+type UsersActivitySessionsPushResponse {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+type UsersActivitySessionsResponse {
+  levelContent String
+  levelName    String
+  subject      String
+}
+
+model Activity {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model Session {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model SessionData {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model User {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  email String
+  name  String?
+}
+
 model Users {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  ip_address String
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  /// Multiple data types found: UsersActivity: 36.7%, Array(UsersActivity): 63.3% out of 30 sampled entries
+  activity   Json?
+  ip_address String?
   password   String
-  username   String    @unique
-  activity   Json[]
+  username   String  @unique
 }
