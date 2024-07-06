@@ -22,7 +22,7 @@ async function sendLesson3(req, res) {
 
   const input = req.body.prompt;
   var index = req.body.index;
-  console.log("🐸🐸🐸 ",input)
+  //console.log("🐸🐸🐸 ",input)
   const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
   var messages = [];
 
@@ -79,7 +79,7 @@ async function sendLesson3(req, res) {
   
   const layer1_indecies = history_array[history_array.length-1].layer0.layer1_indecies;
   const layer0_indecies = history_array[history_array.length-1].layer0.layer0_indecies;
-  console.log("}}}}}}}}} layer1_indecies ", layer1_indecies);
+  //console.log("}}}}}}}}} layer1_indecies ", layer1_indecies);
   // var layer3_updated = history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2[history_array[history_array.length-1].layer0.layer1[history_array[history_array.length-1].layer0.layer1.length -1].layer2.length-1].layer3
   var layer3_updated = history_array[history_array.length-1].layer0.layer1[layer0_indecies[layer0_indecies.length-1]].layer2[layer1_indecies[layer1_indecies.length-1]].layer3
   const max_l3_length = 17;

@@ -157,7 +157,7 @@ This list is just a suggestion, and the specific chapters that are included in a
     var sizeInBytes = getArraySizeInBytes(messages);
   
     // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-    console.log(`✨ ${resp}`);
+    //console.log(`✨ ${resp}`);
   
     const lines = resp.split("\n");
     const topics = [];
@@ -174,7 +174,7 @@ This list is just a suggestion, and the specific chapters that are included in a
       }
     });
   
-    console.log("🔥🔥", topics);
+    console.log("🔥🔥 Chapters: ", topics);
     const output = {
       chapters: topics,
       level: input.levelName,
@@ -189,7 +189,7 @@ This list is just a suggestion, and the specific chapters that are included in a
     })
     const history_array = userHistory.activity;
     
-    console.log("l0_index: ",index);
+    //console.log("l0_index: ",index);
 
     //const max_l1_length = history_array[history_array.length-1].layer0.response.length;
     const max_l1_length = 15
@@ -216,7 +216,7 @@ This list is just a suggestion, and the specific chapters that are included in a
       layer2:[]
     }
     
-    console.log("🟩🟩🟩🟩 ",layer1_updated, "\n CCCCCCCCCC ",max_l1_length, "\n UUUUU ",layer1_updated.length)
+    //console.log("🟩🟩🟩🟩 ",layer1_updated, "\n CCCCCCCCCC ",max_l1_length, "\n UUUUU ",layer1_updated.length)
       await prisma.users.update(
         {
         where: { username: username },

@@ -36,7 +36,7 @@ async function login(req, res) {
     const userHistory = await prisma.users.findUnique({
       where: { username: username}
     })
-    console.log("~~~~~~~~~~~~~~~~ ",userHistory)
+    //console.log("~~~~~~~~~~~~~~~~ ",userHistory)
     
 
     await prisma.users.update({
@@ -53,9 +53,10 @@ async function login(req, res) {
     
     if (matched) {
         const secretKey = 'secretto'
-      console.log("✅✅✅ Matched!");
+      console.log("✅✅✅ Matched! ", username, password);
       const token = jwt.sign({ username: matched.username}, secretKey, { expiresIn: '24h' });
-      console.log(token);
+      //console.log(token);
+      
       res.status(200).send({token});
     } else if(matched === null) {
         console.log("🔴🔴🔴 Wrong password");
