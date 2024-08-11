@@ -3,19 +3,12 @@ const { PrismaClient } = require("@prisma/client");
 const cors  = require("cors");
 const morgan = require("morgan");
 require("dotenv").config();
+const rateLimit = require('express-rate-limit');
 
 const prisma = new PrismaClient();
 const app = express();
 
-const rateLimit = require('express-rate-limit');
 
-const limiter = rateLimit({
-    windowMs: 10000,
-    max:2,
-    handler: (req, res) => {
-        res.status(429).json({ error:  "⚠️⚠️⚠️ server overload, please try again in a 10 seconds"});
-    }
-});
 
 
 
@@ -35,9 +28,16 @@ const getActivity = require("./Controllers/activity.controller.js")
 app.use(express.json());
 app.use(cors());
 
+const limiter = rateLimit({
+    windowMs: 10000,
+    max:2,
+    handler: (req, res) => {
+        res.status(429).json({ error:  "⚠️⚠️⚠️ server overload, please try again in a 10 seconds"});
+    }
+});
 
 
-  
+
 
 app.use(morgan('combined'))
 app.post('/login', login);
