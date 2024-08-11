@@ -47,8 +47,8 @@ app.post('/login', login);
 //} );        //postuser
 app.post('/signup',postUser);
 app.get('/',getHome);
-app.post('/layer3',auth,limiter,sendLayer3);
-app.post('/layer2',auth,limiter,sendLayer2);
+app.post('/layer3',limiter,auth,sendLayer3);
+app.post('/layer2',limiter,auth,sendLayer2);
 app.post('/layer1',auth,sendLayer1)
 app.post('/layer0',auth,sendLayer0)
 app.post("/send", postMessage);
