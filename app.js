@@ -33,9 +33,10 @@ const limiter = rateLimit({
     max:2,
     handler: (req, res) => {
         res.status(429).json({ error:  "⚠️⚠️⚠️ server overload, please try again in a 10 seconds"});
-    }
+    },
+    validate: {xForwardedForHeader: false} 
 });
-app.set('trust proxy', true); 
+// app.set('trust proxy', true); 
 
 
 
