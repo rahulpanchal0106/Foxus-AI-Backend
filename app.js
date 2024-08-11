@@ -7,6 +7,18 @@ require("dotenv").config();
 const prisma = new PrismaClient();
 const app = express();
 
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+    windowMs: 10000,
+    max:2,
+    handler: (req, res) => {
+        res.status(429).json({ error:  "⚠️⚠️⚠️ server overload, please try again in a 10 seconds"});
+    }
+});
+
+
+
 const getAllUsers=require('./Controllers/getAllUsers.controller.js')
 const postUser= require('./auth/signup.js')
 const getHome = require('./Controllers/getHome.controller.js')
@@ -23,6 +35,10 @@ const getActivity = require("./Controllers/activity.controller.js")
 app.use(express.json());
 app.use(cors());
 
+
+
+  
+
 app.use(morgan('combined'))
 app.post('/login', login);
 //app.post('/signup', (req,res)=>{
@@ -30,8 +46,8 @@ app.post('/login', login);
 //} );        //postuser
 app.post('/signup',postUser);
 app.get('/',getHome);
-app.post('/layer3',auth,sendLayer3);
-app.post('/layer2',auth,sendLayer2);
+app.post('/layer3',auth,limiter,sendLayer3);
+app.post('/layer2',auth,limiter,sendLayer2);
 app.post('/layer1',auth,sendLayer1)
 app.post('/layer0',auth,sendLayer0)
 app.post("/send", postMessage);
