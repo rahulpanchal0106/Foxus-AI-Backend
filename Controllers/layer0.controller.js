@@ -1,71 +1,37 @@
 require("dotenv").config();
-const {PrismaClient} = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const jwt = require('jsonwebtoken')
-//REQUIREMENTS: req.body must have prompt:"<SUBJECT NAME>"
+const jwt = require('jsonwebtoken');
 const { generateText } = require("../utils/Result");
 const { response } = require("../app");
-var levels = [];
 const secretKey = 'secretto';
-//if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
+
 function isDirectQuestion(question) {
   const directKeywords = [
-    "what",
-    "who",
-    "how",
-    "when",
-    "where",
-    "definition",
-    "capital",
-    "formula",
-    "define",
-    "explain",
-    "describe",
-    "list",
-    "name",
-    "identify",
-    "which",
-    "is",
-    "can",
-    "are",
-    "could",
-    "should",
-    "do",
-    "does",
-    "why",
-    "must"
+    "what", "who", "how", "when", "where", "definition", "capital", "formula",
+    "define", "explain", "describe", "list", "name", "identify", "which", "is",
+    "can", "are", "could", "should", "do", "does", "why", "must"
   ];
-  return directKeywords.some((keyword) =>
-    question.toLowerCase().startsWith(keyword)
-  );
+  return directKeywords.some(keyword => question.toLowerCase().startsWith(keyword));
 }
-async function getDirectAnswer(question, client) {
+
+async function getDirectAnswer(question) {
   const context = `Answer the following question directly and concisely: ${question}`;
   const examples = [];
   const messages = [{ content: question }];
 
   const topicsText = await generateText(context, examples, messages);
-
-  //console.log(topicsText);
   return topicsText;
 }
-async function sendLayer0(req, res) {
 
-  //Decoding username from cookie
+async function sendLayer0(req, res) {
+  // Decoding username from cookie
   const authHeader = req.headers.authorization;
   const token = authHeader.split(' ')[1];
   const decoded = jwt.decode(token);
-  
   const username = decoded.username;
 
-
   const prompt = req.body.prompt;
-
-  
-  var messages = [];
-  levels = [];
-
-  console.log("processing...");
 
   const { DiscussServiceClient } = require("@google-ai/generativelanguage");
   const { GoogleAuth } = require("google-auth-library");
@@ -77,8 +43,8 @@ async function sendLayer0(req, res) {
     authClient: new GoogleAuth().fromAPIKey(API_KEY),
   });
 
-  let PaLM_res;
-  const context = `List three levels of learning(Beginner,intermediate,expert) for the topic: ${prompt}. Here, do not explain in detail about the levels`;
+  let levels = [];
+  const context = `List three levels of learning(Beginner, intermediate, expert) for the topic: ${prompt}. Here, do not explain in detail about the levels`;
   const examples = [
     {
       "input": { "content": "List appropriate levels of learning for the topic or subject: Three.js. " },
@@ -135,16 +101,12 @@ async function sendLayer0(req, res) {
     }
   ];
 
-  console.log(`Prompt arrived..... ${prompt}`);
-  const input = `List three or four levels of learning for the topic or subject: ${prompt}. do not go in details just write a brief note along with the level names. `
-  // log(`Prompt arrived..... ${prompt}`);
-  messages.push({ content: input });
-  
-  
-  
+  const input = `List three or four levels of learning for the topic or subject: ${prompt}. Do not go into details; just write a brief note along with the level names.`;
+  const messages = [{ content: input }];
+
   if (isDirectQuestion(prompt)) {
     // Attempt to get a direct answer
-    const directAnswer = await getDirectAnswer(prompt, client);
+    const directAnswer = await getDirectAnswer(prompt);
 
     if (directAnswer) {
       res.status(200).json({ result: directAnswer });
@@ -154,41 +116,26 @@ async function sendLayer0(req, res) {
   } else {
     const resp = await generateText(context, examples, messages);
 
-  // if(sizeInBytes>=20000){
-  //     messages.pop();
-  // }
-  messages.push({ content: resp });
+    function getArraySizeInBytes(arr) {
+      const jsonString = JSON.stringify(arr);
+      return Buffer.from(jsonString).length;
+    }
 
-  function getArraySizeInBytes(arr) {
-    var jsonString = JSON.stringify(arr);
-    var bytes = Buffer.from(jsonString).length;
-    return bytes;
-  }
-  var sizeInBytes = getArraySizeInBytes(messages);
+    const sizeInBytes = getArraySizeInBytes(messages);
+    const lines = resp.split("\n");
 
-  // console.log(`\n⚡Prompt: ${convo.prompt}\n✨Response:${convo.resp}`);
-  //console.log(`✨ ${resp}`);
-
-  const lines = resp.split("\n");
-
-    // Generate topics and explain the selected one
-    messages.push({ content: prompt });
-
-    // const topicsText = await generateText(context, examples, messages);
-    lines.forEach((line) => {
+    // Process levels
+    levels = lines.reduce((acc, line) => {
       if (line.startsWith("* **") || line.startsWith("*")) {
         const level = line.replace("* **", "").replace("*", "").trim();
-        levels.push(level);
+        return [...acc, level];  // Use array spread operator to avoid push
       }
-    });
-
-    //console.log("🔥🔥 Levels: ", levels);
+      return acc;
+    }, []);
 
     const levelsJson = levels.map((levelStr) => {
-      // Check if the string contains ":*"
       const delimiterIndex = levelStr.indexOf(":*");
       if (delimiterIndex !== -1) {
-        // If ":*" is found, split the string into name and content
         const [name, content] = levelStr.split(":*");
         return {
           levelName: name.trim(),
@@ -196,7 +143,6 @@ async function sendLayer0(req, res) {
           subject: prompt,
         };
       } else {
-        // If ":*" is not found, split the string by ":"
         const [name, content] = levelStr.split(":");
         return {
           levelName: name.trim(),
@@ -205,36 +151,75 @@ async function sendLayer0(req, res) {
         };
       }
     });
-    console.log("🔥 Levels JSON: ",levelsJson);
-    const dateObj = new Date();
-    const currentTime = dateObj.toISOString();
 
+
+    // await prisma.users.update({
+    //   where: { username: username },
+    //   data: {
+    //     activity: {
+    //       update: {
+    //         time: currentTime,
+    //         layer0: {
+    //           prompt: prompt,
+    //           response: levelsJson,
+    //           layer1: [],
+    //           layer0_indecies: [],
+    //           layer1_indecies: [],
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
+
+    async function updateUserActivity(username, newEntry) {
+      try {
+        // Step 1: Retrieve the existing user data
+        const user = await prisma.users.findUnique({
+          where: { username: username }
+        });
     
-
-    await prisma.users.update({
-      where: { username: username },
-      data: {
-        activity: {
-          push:{
-            time: currentTime,
-            layer0: {
-              prompt: prompt,
-              response: levelsJson,
-              layer1:[],
-              layer0_indecies:[],
-              layer1_indecies:[],
-            }
-          }
+        if (!user) {
+          throw new Error("User not found");
         }
-      }
-    });
     
-    console.log("layer0 data updated on db")
+        // Step 2: Modify the activity array
+        const updatedActivity = [...user.activity, newEntry];
+    
+        // Step 3: Update the database with the new array
+        await prisma.users.update({
+          where: { username: username },
+          data: {
+            activity: updatedActivity
+          }
+        });
+    
+        console.log("Activity updated successfully");
+      } catch (error) {
+        console.error("Error updating user activity:", error);
+        throw error;
+      }
+    }
+    
+    const newEntry = {
+      time: new Date().toISOString(),
+      layer0: {
+        prompt: prompt,
+        response: levelsJson,
+        layer1: [],
+        layer0_indecies: [],
+        layer1_indecies: [],
+      }
+    };
+    
+    updateUserActivity(username, newEntry);
+    
+
+
+    console.log("Layer0 data updated in DB");
     console.log(`Size of request payload: ${sizeInBytes} bytes`);
     res.status(200).json(levelsJson);
   }
 
-  // console.log(messages);
   messages.push({ content: "NEXT REQUEST" });
 }
 
