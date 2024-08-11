@@ -35,7 +35,7 @@ const limiter = rateLimit({
         res.status(429).json({ error:  "⚠️⚠️⚠️ server overload, please try again in a 10 seconds"});
     }
 });
-app.set('trust proxy', 1); 
+app.set('trust proxy', true); 
 
 
 
