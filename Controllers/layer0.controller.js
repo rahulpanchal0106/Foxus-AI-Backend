@@ -2,7 +2,7 @@ require("dotenv").config();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
-const { generateText } = require("../utils/Result");
+const { generateText_PaLM2, generateText_Gemini } = require("../utils/Result");
 const { response } = require("../app");
 const secretKey = 'secretto';
 
@@ -20,7 +20,8 @@ async function getDirectAnswer(question) {
   const examples = [];
   const messages = [{ content: question }];
 
-  const topicsText = await generateText(context, examples, messages);
+  // const topicsText = await generateText_PaLM2(context, examples, messages);
+  const topicsText = await generateText_Gemini(context, examples, question);
   return topicsText;
 }
 
@@ -37,7 +38,7 @@ async function sendLayer0(req, res) {
   const { GoogleAuth } = require("google-auth-library");
 
   const MODEL_NAME = "models/chat-bison-001";
-  const API_KEY = process.env.API_KEY;
+  const API_KEY = process.env.API_KEY_Gemini;
 
   const client = new DiscussServiceClient({
     authClient: new GoogleAuth().fromAPIKey(API_KEY),
@@ -101,7 +102,7 @@ async function sendLayer0(req, res) {
     }
   ];
 
-  const input = `List three or four levels of learning for the topic or subject: ${prompt}. Do not go into details; just write a brief note along with the level names.`;
+  const input = `List three or four levels of learning for the topic or subject: ${prompt}. Do not go into details; just write a brief note along with the level names. Also Do not put numbers for listing these levels`;
   const messages = [{ content: input }];
 
   if (isDirectQuestion(prompt)) {
@@ -114,7 +115,8 @@ async function sendLayer0(req, res) {
       res.status(200).json({ error: "Unable to find a direct answer" });
     }
   } else {
-    const resp = await generateText(context, examples, messages);
+    // const resp = await generateText_PaLM2(context, examples, messages);
+    const resp = await generateText_Gemini(context, examples, input);
 
     function getArraySizeInBytes(arr) {
       const jsonString = JSON.stringify(arr);
@@ -122,13 +124,14 @@ async function sendLayer0(req, res) {
     }
 
     const sizeInBytes = getArraySizeInBytes(messages);
+    // console.log("🍻🍻🍻🍻 ",resp)
     const lines = resp.split("\n");
 
     // Process levels
     levels = lines.reduce((acc, line) => {
       if (line.startsWith("* **") || line.startsWith("*")) {
         const level = line.replace("* **", "").replace("*", "").trim();
-        return [...acc, level];  // Use array spread operator to avoid push
+        return [...acc, level]; 
       }
       return acc;
     }, []);
@@ -151,6 +154,8 @@ async function sendLayer0(req, res) {
         };
       }
     });
+
+    console.log("🤣🤣🤣🤣 ",levelsJson)
 
 
     // await prisma.users.update({
@@ -184,7 +189,7 @@ async function sendLayer0(req, res) {
     
         // Step 2: Modify the activity array
         const updatedActivity = [...user.activity, newEntry];
-    
+        
         // Step 3: Update the database with the new array
         await prisma.users.update({
           where: { username: username },
@@ -192,7 +197,7 @@ async function sendLayer0(req, res) {
             activity: updatedActivity
           }
         });
-    
+        
         console.log("Activity updated successfully");
       } catch (error) {
         console.error("Error updating user activity:", error);
@@ -211,6 +216,7 @@ async function sendLayer0(req, res) {
       }
     };
     
+    console.log("🍻🍻🍻🍻 ",newEntry)
     updateUserActivity(username, newEntry);
     
 

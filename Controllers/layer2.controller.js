@@ -1,4 +1,4 @@
-const { generateText } = require("../utils/Result");
+const { generateText_PaLM2 } = require("../utils/Result");
 
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
@@ -72,7 +72,7 @@ async function sendLayer2(req, res) {
   console.log(`Prompt arrived..... ${prompt}`);
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText(context, examples, messages);
+  const resp = await generateText_PaLM2(context, examples, messages);
   if(resp=='null' || resp=="No content generated"){
     return res.status(501).json({error:"Error from chat-bison-001"})
   }else{

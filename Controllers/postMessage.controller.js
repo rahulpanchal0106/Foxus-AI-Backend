@@ -7,7 +7,7 @@ const { GoogleAuth } = require("google-auth-library");
 const { generateText } = require("../utils/Result");
 
 const MODEL_NAME = "models/chat-bison-001";
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.API_KEY_Gemini;
 
 const client = new DiscussServiceClient({
   authClient: new GoogleAuth().fromAPIKey(API_KEY),

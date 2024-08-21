@@ -8,10 +8,6 @@ const rateLimit = require('express-rate-limit');
 const prisma = new PrismaClient();
 const app = express();
 
-
-
-
-
 const getAllUsers=require('./Controllers/getAllUsers.controller.js')
 const postUser= require('./auth/signup.js')
 const getHome = require('./Controllers/getHome.controller.js')
@@ -37,9 +33,6 @@ const limiter = rateLimit({
     validate: {xForwardedForHeader: false} 
 });
 // app.set('trust proxy', true); 
-
-
-
 
 app.use(morgan('combined'))
 app.post('/login', login);
