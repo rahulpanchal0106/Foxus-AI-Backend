@@ -1,6 +1,6 @@
 const { DiscussServiceClient } = require("@google-ai/generativelanguage");
 const { GoogleAuth } = require("google-auth-library");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory  } = require("@google/generative-ai");
 
 const MODEL_NAME = "models/chat-bison-001";
 const API_KEY_PaLM2 = process.env.API_KEY_PaLM2;
@@ -41,8 +41,52 @@ async function generateText_Gemini(context = "", examples = [],prompt){
       maxOutputTokens: 200,
       temperature: 0.1, 
       topP: 0.3,        
-      topK: 10,       
+      topK: 10,    
+
   };
+  // const safetySettings = [
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_DEROGATORY,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_TOXICITY,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_SEXUAL,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_MEDICAL,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_DANGEROUS,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   },
+  //   {
+  //     category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+  //     threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+  //   }
+    
+  // ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro",generationConfig:generationConfig });
   try{
     const result = await model.generateContent(prompt);

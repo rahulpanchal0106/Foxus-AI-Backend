@@ -26,7 +26,7 @@ async function sendLayer2(req, res) {
   //console.log("index l1-arr: ",index)
 
   // const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names. `;
-  const prompt = `List all possible lessons for ${input.chapter} in subject ${input.subject}, at level ${input.levelName}. Do not go into details; just write a brief decription of lesson along with and right next to the lesson names. Only use * and not anything else for listing these lessons. Here keep the Lesson-name Bold and bigger in size. DO not include the level name or chapter name in your response, just start with a lessonname:description pair and end with the same.`;
+  const prompt = `List all possible lessons for ${input.chapter} in subject ${input.subject}, at level ${input.levelName}. Do not go into details; just write a briefly long decription of lesson along with and right next to the lesson names. Explicitly use * and not anything else for listing these lessons. Here keep the Lesson-name Bold and bigger in size. DO not include the level name or chapter name in your response, just start with a lessonname:description pair and end with the same.`;
   var messages = [];
   lessons = [];
 
