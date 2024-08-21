@@ -1,4 +1,4 @@
-const { generateText_PaLM2 } = require("../utils/Result");
+const { generateText_PaLM2, generateText_Gemini } = require("../utils/Result");
 
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
@@ -25,7 +25,8 @@ async function sendLayer2(req, res) {
 
   //console.log("index l1-arr: ",index)
 
-  const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names.`;
+  // const prompt = `List all possible lessons for chapter ${input.chapter} in ${input.subject}, at level ${input.levelName}. Provide brief notes along with lesson names. `;
+  const prompt = `List all possible lessons for ${input.chapter} in subject ${input.subject}, at level ${input.levelName}. Do not go into details; just write a brief decription of lesson along with and right next to the lesson names. Only use * and not anything else for listing these lessons. Here keep the Lesson-name Bold and bigger in size. DO not include the level name or chapter name in your response, just start with a lessonname:description pair and end with the same.`;
   var messages = [];
   lessons = [];
 
@@ -72,7 +73,8 @@ async function sendLayer2(req, res) {
   console.log(`Prompt arrived..... ${prompt}`);
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText_PaLM2(context, examples, messages);
+  // const resp = await generateText_PaLM2(context, examples, messages);
+  const resp = await generateText_Gemini(context, examples, prompt);
   if(resp=='null' || resp=="No content generated"){
     return res.status(501).json({error:"Error from chat-bison-001"})
   }else{

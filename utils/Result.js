@@ -55,4 +55,4 @@ async function generateText_Gemini(context = "", examples = [],prompt){
 
 }
 
-module.exports = { generateText_PaLM2,generateText_Gemini };
+module.exports = { generateText_PaLM2, generateText_Gemini };

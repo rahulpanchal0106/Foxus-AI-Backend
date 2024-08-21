@@ -1,4 +1,4 @@
-const { generateText_PaLM2 } = require("../utils/Result");
+const { generateText_PaLM2, generateText_Gemini } = require("../utils/Result");
 
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
@@ -23,20 +23,20 @@ async function sendLesson3(req, res) {
   const input = req.body.prompt;
   var index = req.body.index;
   //console.log("🐸🐸🐸 ",input)
-  const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
+  const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}. Each lesson-name should be written along with a note like this, LESSONNAME: LESSON NOTE`;
   var messages = [];
 
   console.log("processing...");
   
-  const { DiscussServiceClient } = require("@google-ai/generativelanguage");
-  const { GoogleAuth } = require("google-auth-library");
+  // const { DiscussServiceClient } = require("@google-ai/generativelanguage");
+  // const { GoogleAuth } = require("google-auth-library");
 
-  const MODEL_NAME = "models/chat-bison-001";
-  const API_KEY = process.env.API_KEY;
+  // const MODEL_NAME = "models/chat-bison-001";
+  // const API_KEY = process.env.API_KEY;
 
-  const client = new DiscussServiceClient({
-    authClient: new GoogleAuth().fromAPIKey(API_KEY),
-  });
+  // const client = new DiscussServiceClient({
+  //   authClient: new GoogleAuth().fromAPIKey(API_KEY),
+  // });
 
   let PaLM_res;
   const context = `Teach in details and give comprehensive insights with examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}. I have ${input.levelName} level experience. Please include any example of the code if this subject or lesson or chapter requires one for better understanding.`;
@@ -45,7 +45,8 @@ async function sendLesson3(req, res) {
   console.log(`Prompt arrived..... ${prompt}`);
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText_PaLM2(context, examples, messages);
+  // const resp = await generateText_PaLM2(context, examples, messages);
+  const resp = await generateText_Gemini(context, examples, prompt);
 
   // if(sizeInBytes>=20000){
   //     messages.pop();
