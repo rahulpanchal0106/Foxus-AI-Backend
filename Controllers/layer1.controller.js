@@ -1,4 +1,4 @@
-const { generateText_PaLM2 } = require("../utils/Result");
+const { generateText, generateText_Gemini} = require("../utils/Result");
 
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
@@ -136,8 +136,9 @@ This list is just a suggestion, and the specific chapters that are included in a
 
   // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText_PaLM2(context, examples, messages);
-  
+  // const resp = await generateText(context, examples, messages);
+  const resp = await generateText_Gemini(context, examples, prompt);
+
   if(resp=='null'){
     return res.status(501).json({error:"Error from chat-bison-001"})
   }else if(resp=="No content generated"){
