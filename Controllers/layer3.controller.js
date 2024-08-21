@@ -23,7 +23,7 @@ async function sendLesson3(req, res) {
   const input = req.body.prompt;
   var index = req.body.index;
   //console.log("🐸🐸🐸 ",input)
-  const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}. Each lesson-name should be written along with a note like this, LESSONNAME: LESSON NOTE`;
+  const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
   var messages = [];
 
   console.log("processing...");
