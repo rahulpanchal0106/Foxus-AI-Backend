@@ -155,8 +155,6 @@ async function sendLayer0(req, res) {
       }
     });
 
-    console.log("🤣🤣🤣🤣 ",levelsJson)
-
 
     // await prisma.users.update({
     //   where: { username: username },
@@ -216,7 +214,6 @@ async function sendLayer0(req, res) {
       }
     };
     
-    console.log("🍻🍻🍻🍻 ",newEntry)
     updateUserActivity(username, newEntry);
     
 
