@@ -23,7 +23,8 @@ async function sendLesson3(req, res) {
   const input = req.body.prompt;
   var index = req.body.index;
   //console.log("🐸🐸🐸 ",input)
-  const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
+  // const prompt = `Teach me in details and give comprehensive insights with suitable examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
+  const prompt = `Teach me this lesson: ${input.lessonName}, I want to learn this lesson in-depth with suitable examples and at least 10 lines of explanation. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson must be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}.`;
   var messages = [];
 
   console.log("processing...");
@@ -39,7 +40,7 @@ async function sendLesson3(req, res) {
   // });
 
   let PaLM_res;
-  const context = `Teach in details and give comprehensive insights with examples about the lesson: ${input.lessonName}. Here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}. I have ${input.levelName} level experience. Please include any example of the code if this subject or lesson or chapter requires one for better understanding.`;
+  const context = `Teach me in details and give comprehensive insights with examples about the lesson: ${input.lessonName}. For your reference here is a quick intro about this lesson: ${input.lessonContent}. The lesson should be in context of the chapter: ${input.chapter}. This lesson is a part of the subject: ${input.subject}. I have ${input.levelName} level experience. Please include any example of the code if this subject or lesson or chapter requires one for better understanding. Please try to make the explanetion al long and deep as possible.`;
   const examples = [];
 
   console.log(`Prompt arrived..... ${prompt}`);

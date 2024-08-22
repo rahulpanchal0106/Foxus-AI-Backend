@@ -37,12 +37,9 @@ async function generateText_PaLM2(context = "", examples = [], messages = []) {
 async function generateText_Gemini(context = "", examples = [],prompt){
   const genAI = new GoogleGenerativeAI(process.env.API_KEY_Gemini);
   const generationConfig = {
-      stopSequences: ["red"],
-      maxOutputTokens: 200,
-      temperature: 0.1, 
-      topP: 0.3,        
-      topK: 10,    
-
+    temperature: 0.1, 
+    topP: 0.3,        
+    topK: 10,    
   };
   // const safetySettings = [
   //   {
@@ -87,7 +84,7 @@ async function generateText_Gemini(context = "", examples = [],prompt){
   //   }
     
   // ];
-  const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro",generationConfig:generationConfig });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",generationConfig:generationConfig });
   try{
     const result = await model.generateContent(prompt);
     console.log(result.response.text());
