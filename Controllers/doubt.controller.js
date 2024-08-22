@@ -1,6 +1,6 @@
 require("dotenv").config();
 //REQUIREMENTS: req.body must have prompt:"<SUBJECT NAME>"
-const { generateText } = require("../utils/Result");
+const { generateText_Gemini } = require("../utils/Result");
 var levels = [];
 //if prompt contain following keyword then it is considered as simple and we can directly answer is as it is
 
@@ -23,7 +23,7 @@ async function sendLayer0(req, res) {
 
   console.log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText(context, examples, messages);
+  const resp = await generateText_Gemini(context, examples, prompt);
 
   messages.push({ content: resp });
 

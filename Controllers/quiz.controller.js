@@ -1,5 +1,5 @@
 
-const { generateText_PaLM2 } = require("../utils/Result");
+const { generateText_PaLM2,generateText_Gemini } = require("../utils/Result");
 
 require("dotenv").config();
 
@@ -18,7 +18,8 @@ async function generatequiz(req, res) {
   console.log(`Prompt arrived..... ${prompt}`);
   // // log(`Prompt arrived..... ${prompt}`);
   messages.push({ content: prompt });
-  const resp = await generateText_PaLM2(context, examples, messages);
+  // const resp = await generateText_PaLM2(context, examples, messages);
+  const resp = await generateText_Gemini(context, examples, prompt);
 
   // if(sizeInBytes>=20000){
   //     messages.pop();

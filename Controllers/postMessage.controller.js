@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const { DiscussServiceClient } = require("@google-ai/generativelanguage");
 const { GoogleAuth } = require("google-auth-library");
-const { generateText } = require("../utils/Result");
+const { generateText,generateText_Gemini } = require("../utils/Result");
 
 const MODEL_NAME = "models/chat-bison-001";
 const API_KEY = process.env.API_KEY_Gemini;
@@ -37,10 +37,10 @@ async function postMessage(req, res) {
       console.log(`Prompt arrived..... ${prompt}`);
       messages.push({ content: prompt });
 
-      const topicsText = await generateText(
+      const topicsText = await generateText_Gemini(
         context,
         examples,
-        messages
+        prompt
       );
 
       // const resp = result[0].candidates[0].content;
@@ -93,7 +93,7 @@ async function getDirectAnswer(question, client) {
   const examples = [];
   const messages = [{ content: question }];
 
-  const topicsText = await generateText( context, examples, messages);
+  const topicsText = await generateText_Gemini( context, examples, question);
 
   console.log(topicsText);
   return topicsText;
@@ -105,7 +105,7 @@ async function explainTopic(topic, client) {
   const examples = [];
   const messages = [{ content: topic }];
 
-  const topicsText = await generateText( context, examples, messages);
+  const topicsText = await generateText_Gemini( context, examples, topic);
   return topicsText;
 }
 
@@ -116,7 +116,7 @@ async function generateQuiz(topic, client) {
   const examples = [];
   const messages = [{ content: topic }];
 
-  const quizData = await generateText( context, examples, messages);
+  const quizData = await generateText_Gemini( context, examples, topic);
 
   // Parse and structure quiz data (e.g., into an array of question objects)
   console.log(quizData);
