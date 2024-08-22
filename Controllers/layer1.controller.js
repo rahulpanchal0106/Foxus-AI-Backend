@@ -20,7 +20,7 @@ async function postLayer1(req, res) {
     const username = decoded.username;
 
   const input = req.body.prompt; //should contain levelName, levelContent and Subject
-  const prompt = `List possible chapters for the ${input.levelName} level  Subject: ${input.subject}. It must be a final list of all the possible chapters. Let me give you a brief intro: ${input.levelContent},here please try to provide more number of chapters  if possible along with the topics that are to be included as per the brief intro.Additionally do not give any additional information about the chapters.`;
+  const prompt = `List possible chapters for the ${input.levelName} level, Subject: ${input.subject}. It must be a final list of all the possible chapters, and there must not be a sublist of the lessons inside it. Let me give you a brief intro: ${input.levelContent},here please try to provide more number of chapters  if possible.Additionally do not give any additional information about the chapters.`;
   var messages = [];
 
   console.log("processing...");
